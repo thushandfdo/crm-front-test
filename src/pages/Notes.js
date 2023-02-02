@@ -4,6 +4,7 @@ import NoteCard from '../components/NoteCard';
 import Masonry from 'react-masonry-css';
 import { useStyles } from '../Styles';
 import { Typography } from '@mui/material';
+import { createAPIEndpoint, ENDPOINTS } from '../api';
 
 export default function Notes() {
     const [notes, setNotes] = useState([]);
@@ -11,39 +12,39 @@ export default function Notes() {
     const classes = useStyles();
 
     useEffect(() => {
-        fetch('https://localhost:7143/api/Note')
+        createAPIEndpoint(ENDPOINTS.note)
+            .fetch()
             .then(res => {
-                if (res.ok){
+                if(res.status === 200){
                     setError(false);
-                    return res.json();
+                    return res.data;
                 }
-                throw new Error();
+                throw new Error("Can not fetch Notes...!")
             })
             .then(data => {
                 setNotes(data);
             })
-            .catch(() => {
+            .catch(err => {
                 setError(true);
-                console.log("Can not fetch data...!");
+                console.log(err);
             });
     }, []);
 
     const handleDelete = async (id) => {
-        await fetch('https://localhost:7143/api/Note/' + id, {
-            method: 'DELETE'
-        }).then(res => {
-            if (res.ok){
-                console.log(res.json());
-                return;
-            }
-            throw new Error();
-        }).catch(() => {
-            alert("Deletion Error...!");
-            console.log("Deletion error...!");
-        });
-
-        const newNotes = notes.filter(note => note.id !== id);
-        setNotes(newNotes);
+        await createAPIEndpoint(ENDPOINTS.note)
+            .delete(id)
+            .then(res => {
+                if(res.status === 200){
+                    const newNotes = notes.filter(note => note.id !== id);
+                    setNotes(newNotes);
+                    return;
+                }
+                throw new Error("Note can not be deleted..!");
+            })
+            .catch(err => {
+                alert("Deletion Error..!");
+                console.log(err);
+            });
     };
 
     const breakpoints = {

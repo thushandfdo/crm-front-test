@@ -11,6 +11,7 @@ import FormLabel from '@mui/material/FormLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRightOutlined';
+import { createAPIEndpoint, ENDPOINTS } from '../api';
 
 export default function Create() {
     const { classes } = useStyles();
@@ -32,21 +33,12 @@ export default function Create() {
             setDetailsError(true)
 
         if (title && details) {
-            fetch('https://localhost:7143/api/Note', {
-                method: 'POST',
-                headers: { 'content-type': 'application/json' },
-                body: JSON.stringify({ title, details, category })
-            }).then((response) => {
-                if (response.ok) {
-                    console.log(response.json());
-                    return;
-                }
-                throw new Error('Something went wrong');
-            }).then(() => navigate('/'))
-                .catch(() => {
-                    alert("Insertion failed...!");
-                    console.log("Insertion Error...!");
-                });
+            var data = { title, details, category };
+
+            createAPIEndpoint(ENDPOINTS.note)
+                .post(data)
+                .then(() => navigate('/'))
+                .catch(err => console.log(err));
         }
     }
 
