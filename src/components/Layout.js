@@ -1,87 +1,132 @@
-import React from 'react'
-import AppBar from '@mui/material/AppBar';
-import Avatar from '@mui/material/Avatar';
+import React from 'react';
+import { styled, useTheme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import MuiDrawer from '@mui/material/Drawer';
+import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import AddCircleOutlined from '@mui/icons-material/AddCircleOutlined';
-import SubjectOutlined from '@mui/icons-material/SubjectOutlined';
-import { useStyles } from '../Styles';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { format } from 'date-fns';
+import CssBaseline from '@mui/material/CssBaseline';
+import IconButton from '@mui/material/IconButton';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { AppBarBody, AppBarToggleIcon } from './AppBar';
+import { DrawerBody } from './Drawer';
 
-function Layout({ children }) {
-    const { classes } = useStyles();
-    const navigate = useNavigate();
-    const location = useLocation();
+const drawerWidth = 240;
 
-    const menuItems = [
-        {
-            text: "My Notes",
-            icon: <SubjectOutlined color='secondary' />,
-            path: '/'
-        },
-        {
-            text: "Create Note",
-            icon: <AddCircleOutlined color='secondary' />,
-            path: '/create'
-        }
-    ]
+const openedMixin = (theme) => ({
+    width: drawerWidth,
+    transition: theme.transitions.create('width', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+    }),
+    overflowX: 'hidden',
+});
+
+const closedMixin = (theme) => ({
+    transition: theme.transitions.create('width', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+    }),
+    overflowX: 'hidden',
+    width: `calc(${theme.spacing(7)} + 1px)`,
+    [theme.breakpoints.up('sm')]: {
+        width: `calc(${theme.spacing(8)} + 1px)`,
+    },
+});
+
+const DrawerHeader = styled('div')(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+}));
+
+const AppBar = styled(MuiAppBar, {
+    shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme, open }) => ({
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(['width', 'margin'], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+    }),
+    // Turn toggle on / off
+    ...(open && {
+        marginLeft: drawerWidth,
+        width: `calc(100% - ${drawerWidth}px)`,
+        transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    }),
+}));
+
+const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+    ({ theme, open }) => ({
+        width: drawerWidth,
+        flexShrink: 0,
+        whiteSpace: 'nowrap',
+        boxSizing: 'border-box',
+        ...(open && {
+            ...openedMixin(theme),
+            '& .MuiDrawer-paper': openedMixin(theme),
+        }),
+        ...(!open && {
+            ...closedMixin(theme),
+            '& .MuiDrawer-paper': closedMixin(theme),
+        }),
+    }),
+);
+
+export default function Layout({ children }) {
+    const theme = useTheme();
+    const [open, setOpen] = React.useState(false);
+
+    const handleDrawerOpen = () => {
+        setOpen(true);
+    };
+
+    const handleDrawerClose = () => {
+        setOpen(false);
+    };
 
     return (
-        <div className={classes.root}>
-            {/* app bar */}
-            <AppBar
-                className={classes.appbar}
-                elevation={0}
-            >
+        <Box sx={{ display: 'flex' }}>
+            <CssBaseline />
+
+            <AppBar position="fixed" open={open}>
                 <Toolbar>
-                    <Typography className={classes.date}>
-                        Today is the { format(new Date(), 'do MMMM Y') }
-                    </Typography>
-                    <Typography>
-                        Thushan D. Fernando
-                    </Typography>
-                    <Avatar className={classes.avatar} src='/mario-av.png' />
+                    <IconButton
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={handleDrawerOpen}
+                        edge="start"
+                        sx={{
+                            marginRight: 5,
+                            // Turn toggle on / off
+                            ...(open && { display: 'none' }),
+                        }}
+                    >
+                        <AppBarToggleIcon />
+                    </IconButton>
+                    <AppBarBody />
                 </Toolbar>
             </AppBar>
 
-            {/* side drawer */}
-            <Drawer
-                className={classes.drawer}
-                variant='permanent'
-                anchor='left'
-                classes={{ paper: classes.drawerPaper }}
-            >
-                <div className="">
-                    <Typography variant='h5' className={classes.title}>Ninja Notes</Typography>
-                    <List>
-                        {menuItems.map(item => (
-                            <ListItem 
-                                button
-                                key={item.text}
-                                onClick={() => navigate(item.path)}
-                                className={(location.pathname === item.path) ? classes.active : null}
-                            >
-                                <ListItemIcon>{item.icon}</ListItemIcon>
-                                <ListItemText>{item.text}</ListItemText>
-                            </ListItem>
-                        ))}
-                    </List>
-                </div>
+            <Drawer variant="permanent" open={open}>
+                <DrawerHeader>
+                    <IconButton onClick={handleDrawerClose}>
+                        {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                    </IconButton>
+                </DrawerHeader>
+                <DrawerBody open={open} />
             </Drawer>
 
-            {/* main content */}
-            <div className={classes.page}>
-                <div className={classes.toolbar}></div>
+            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+                <DrawerHeader />
                 {children}
-            </div>
-        </div>
-    )
+            </Box>
+        </Box>
+    );
 }
-
-export default Layout;
