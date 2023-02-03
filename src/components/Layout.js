@@ -1,15 +1,14 @@
 import React from 'react';
-import { styled, useTheme } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import CssBaseline from '@mui/material/CssBaseline';
 import IconButton from '@mui/material/IconButton';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { AppBarBody, AppBarToggleIcon } from './AppBar';
 import { DrawerBody } from './Drawer';
+import { Divider } from '@mui/material';
 
 const drawerWidth = 240;
 
@@ -37,7 +36,7 @@ const closedMixin = (theme) => ({
 const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
@@ -46,15 +45,15 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme, open }) => ({
-    zIndex: theme.zIndex.drawer + 1,
+    zIndex: theme.zIndex.drawer+1,
     transition: theme.transitions.create(['width', 'margin'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
     }),
     // Turn toggle on / off
+    width: `calc(100% - ${!open ? theme.spacing(8) : drawerWidth+'px'})`,
     ...(open && {
         marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
@@ -80,16 +79,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function Layout({ children }) {
-    const theme = useTheme();
     const [open, setOpen] = React.useState(false);
-
-    const handleDrawerOpen = () => {
-        setOpen(true);
-    };
-
-    const handleDrawerClose = () => {
-        setOpen(false);
-    };
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -97,29 +87,27 @@ export default function Layout({ children }) {
 
             <AppBar position="fixed" open={open}>
                 <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        sx={{
-                            marginRight: 5,
-                            // Turn toggle on / off
-                            ...(open && { display: 'none' }),
-                        }}
-                    >
-                        <AppBarToggleIcon />
-                    </IconButton>
+                    
                     <AppBarBody />
                 </Toolbar>
             </AppBar>
 
             <Drawer variant="permanent" open={open}>
                 <DrawerHeader>
-                    <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                    <IconButton
+                        color="primary"
+                        aria-label="open drawer"
+                        onClick={() => setOpen(!open)}
+                        edge="start"
+                        sx={{
+                            margin: 0,
+                            marginLeft: 0.5
+                        }}
+                    >
+                        <AppBarToggleIcon />
                     </IconButton>
                 </DrawerHeader>
+                <Divider />
                 <DrawerBody open={open} />
             </Drawer>
 
