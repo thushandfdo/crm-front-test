@@ -11,6 +11,11 @@ export const useStyles = makeStyles()((theme) => {
             marginBottom: 20,
             display: 'block'
         },
+        formContainer: {
+            backgroundColor: 'lightgray',
+            padding: theme.spacing(2),
+            borderRadius: theme.spacing(1),
+        },
         page: {
             backgroundColor: '#d2d4d9',
             width: '100%',
@@ -32,8 +37,8 @@ export const useStyles = makeStyles()((theme) => {
         pinkAvatar: {
             backgroundColor: `${pink[500]}`
         },
-        date: {
-            flexGrow: 1
+        noteCard: {
+            backgroundColor: 'lightgray'
         },
         avatar: {
             marginLeft: theme.spacing(2)
@@ -41,7 +46,7 @@ export const useStyles = makeStyles()((theme) => {
         avatarContainer: {
             display: 'grid',
             gridTemplateColumns: '1fr 40px',
-            alignItems: 'center'
+            alignItems: 'center',
         },
         avatarUsername: {
             cursor: 'pointer'
@@ -51,15 +56,23 @@ export const useStyles = makeStyles()((theme) => {
                 padding: 0
             },
             '& .MuiMenu-paper': {
-                borderRadius: '15px',
+                borderRadius: '8px',
                 backgroundColor: '#d2d2d2',
             },
             '& .hiddenMenuContent': {
-                padding: '10px 40px 10px 20px',
+                padding: '10px 20px',
                 display: 'grid',
+                gridTemplateColumns: '1fr',
                 gridAutoRows: 'minmax(20px, auto)',
                 alignItems: 'center',
+                justifyContent: 'flex-start'
             }
+        },
+        userType: {
+            paddingBottom: 0,
+            paddingTop: '5px',
+            textAlign: 'center',
+            width: '100%',
         },
         editProfile: {
             color: 'gray',

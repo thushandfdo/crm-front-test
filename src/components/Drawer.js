@@ -6,6 +6,14 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import AddCircleOutlined from '@mui/icons-material/AddCircleOutlined';
 import SubjectOutlined from '@mui/icons-material/SubjectOutlined';
+import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
+import SupervisedUserCircleOutlinedIcon from '@mui/icons-material/SupervisedUserCircleOutlined';
+import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
+import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
+import UnsubscribeOutlinedIcon from '@mui/icons-material/UnsubscribeOutlined';
+import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
+import PermContactCalendarOutlinedIcon from '@mui/icons-material/PermContactCalendarOutlined';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useStyles } from '../Styles';
 
@@ -24,6 +32,46 @@ export function DrawerBody({ open }) {
             text: "Create Note",
             icon: <AddCircleOutlined className={classes.drawerIcon} />,
             path: '/create'
+        },
+        {
+            text: "Project Details",
+            icon: <AccountTreeOutlinedIcon className={classes.drawerIcon} />,
+            path: '/projects'
+        },
+        {
+            text: "Customers",
+            icon: <SupervisedUserCircleOutlinedIcon className={classes.drawerIcon} />,
+            path: '/customers'
+        },
+        {
+            text: "Tech Leads",
+            icon: <SupportAgentOutlinedIcon className={classes.drawerIcon} />,
+            path: '/tech-leads'
+        },
+        {
+            text: "Reports",
+            icon: <ReceiptLongOutlinedIcon className={classes.drawerIcon} />,
+            path: '/reports'
+        },
+        {
+            text: "Feedback Forms",
+            icon: <QuestionAnswerOutlinedIcon className={classes.drawerIcon} />,
+            path: '/feedbacks'
+        },
+        {
+            text: "Newsletters",
+            icon: <UnsubscribeOutlinedIcon className={classes.drawerIcon} />,
+            path: '/newsletters'
+        },
+        {
+            text: "Payments",
+            icon: <PaidOutlinedIcon className={classes.drawerIcon} />,
+            path: '/payments'
+        },
+        {
+            text: "End Users",
+            icon: <PermContactCalendarOutlinedIcon className={classes.drawerIcon} />,
+            path: '/end-users'
         }
     ]
 

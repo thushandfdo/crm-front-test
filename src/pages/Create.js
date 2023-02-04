@@ -10,20 +10,23 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRightOutlined';
+import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
+import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined';
+import { Stack } from '@mui/material';
 import { createAPIEndpoint, ENDPOINTS } from '../api';
 
 export default function Create() {
     const { classes } = useStyles();
-    const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [details, setDetails] = useState('');
     const [titleError, setTitleError] = useState(false);
     const [detailsError, setDetailsError] = useState(false);
     const [category, setCategory] = useState('todos');
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
         setTitleError(false);
         setDetailsError(false);
 
@@ -38,19 +41,30 @@ export default function Create() {
             createAPIEndpoint(ENDPOINTS.note)
                 .post(data)
                 .then(() => navigate('/'))
-                .catch(err => console.log(err));
+                .catch(err => {
+                    console.log(err);
+                    alert('Insertion Failed..!');
+                });
         }
     }
 
+    const handleClear = () => {
+        setTitle('');
+        setDetails('');
+        setCategory('todos');
+        setTitleError(false);
+        setDetailsError(false);
+    };
+
     return (
         <div className='create'>
-            <Container size='sm'>
+            <Container size='sm' className={classes.formContainer}>
                 <form noValidate autoComplete='off' onSubmit={handleSubmit}>
                     <Typography
                         gutterBottom
                         variant='h6'
                         component='h2'
-                        color='textSecondary'
+                        color='textPrimary'
                     >
                         Create a new Note
                     </Typography>
@@ -95,14 +109,23 @@ export default function Create() {
                         </RadioGroup>
                     </FormControl>
 
-                    <Button
-                        type='submit'
-                        variant='contained'
-                        color='secondary'
-                        endIcon={<KeyboardArrowRightIcon />}
-                    >
-                        Submit
-                    </Button>
+                    <Stack direction="row" spacing={4}>
+                        <Button
+                            type='reset'
+                            variant='outlined'
+                            endIcon={<BackspaceOutlinedIcon />}
+                            onClick={handleClear}
+                        >
+                            Clear
+                        </Button>
+                        <Button
+                            type='submit'
+                            variant='contained'
+                            endIcon={<SendOutlinedIcon />}
+                        >
+                            Submit
+                        </Button>
+                    </Stack>
                 </form>
             </Container>
         </div>

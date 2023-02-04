@@ -7,6 +7,7 @@ import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import { Divider } from '@mui/material';
 
 function NoteCard({ note, handleDelete }) {
     const { classes } = useStyles();
@@ -28,7 +29,7 @@ function NoteCard({ note, handleDelete }) {
 
     return (
         <div className='note-card'>
-            <Card elevation={1}>
+            <Card elevation={1} className={classes.noteCard}>
                 <CardHeader
                     avatar={
                         <Avatar className={getClass(note.category)}>
@@ -43,11 +44,14 @@ function NoteCard({ note, handleDelete }) {
                     title={note.title}
                     subheader={note.category}
                 />
-                <CardContent>
-                    <Typography variant='body2' color='textSecondary'>
-                        {note.details}
-                    </Typography>
-                </CardContent>
+                <center>
+                    <Divider sx={{ width: '90%' }} />
+                    <CardContent sx={{ width: '90%' }}>
+                        <Typography variant='body2' color='textSecondary' sx={{ textAlign: 'left' }}>
+                            {note.details}
+                        </Typography>
+                    </CardContent>
+                </center>
             </Card>
         </div>
     )
