@@ -70,3 +70,84 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 
 @emotion/react @emotion/styled @mui/material @mui/icons-material date-fns react-masonry-css react-router-dom
+
+<FormControl className={clsx(classes.margin, classes.textField)}>
+    <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
+    <Input
+        id="standard-adornment-password"
+        // value={values.weight}
+        // onChange={handleChange('weight')}
+        label="Test"
+        endAdornment={
+            <InputAdornment position="end">
+                <DeleteOutlined />
+            </InputAdornment>
+        }
+        labelWidth={20}
+    />
+</FormControl>
+
+<FormControl className={clsx(classes.margin, classes.textField)} variant="filled">
+    <InputLabel htmlFor="filled-adornment-password">Password</InputLabel>
+    <FilledInput
+        id="filled-adornment-password"
+        // type={values.showPassword ? 'text' : 'password'}
+        // value={values.password}
+        // onChange={handleChange('password')}
+        endAdornment={
+            <InputAdornment position="end">
+                <IconButton>
+                    <Visibility />
+                </IconButton>
+            </InputAdornment>
+        }
+    />
+</FormControl>
+
+// Animation Part
+
+showHiddenMenu: {
+    minheight: '10vh',
+    padding: '10px 40px 10px 20px',
+    opacity: 1,
+    // transitionProperty: 'height',
+    // transitionDuration: '2s',
+    // transitionTimingFunction: 'ease',
+    transition: theme.transitions.create('height', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+    })
+},
+hideHiddenMenu: {
+    height: '0px',
+    opacity: 0,
+    transition: theme.transitions.create('height', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+    })
+},
+
+transition: theme.transitions.create('height', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.enteringScreen,
+})
+
+.show {
+    width: 100px;
+    height: 200px;
+    background: red;
+    color: white;
+    transition-property: height;
+    transition-duration: 0.5s;
+    transition-timing-function: ease;
+}
+
+.hide {
+    width: 100px;
+    height: 100px;
+    background: red;
+    color: white;
+    transition-property: height;
+    transition-duration: 0.5s;
+    transition-timing-function: ease;
+}

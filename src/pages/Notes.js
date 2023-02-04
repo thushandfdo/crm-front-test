@@ -15,7 +15,7 @@ export default function Notes() {
         createAPIEndpoint(ENDPOINTS.note)
             .fetch()
             .then(res => {
-                if(res.status === 200){
+                if (res.status === 200) {
                     setError(false);
                     return res.data;
                 }
@@ -34,7 +34,7 @@ export default function Notes() {
         await createAPIEndpoint(ENDPOINTS.note)
             .delete(id)
             .then(res => {
-                if(res.status === 200){
+                if (res.status === 200) {
                     const newNotes = notes.filter(note => note.id !== id);
                     setNotes(newNotes);
                     return;
@@ -61,13 +61,13 @@ export default function Notes() {
                     className="my-masonry-grid"
                     columnClassName="my-masonry-grid_column"
                 >
-                    {(!error) 
-                    ? notes.map(note => (
-                        <div key={note.id}>
-                            <NoteCard note={note} handleDelete={handleDelete} />
-                        </div>
-                    ))
-                    : <Typography className={classes.error}>Loading...</Typography>}
+                    {(!error)
+                        ? notes.map(note => (
+                            <div key={note.id}>
+                                <NoteCard note={note} handleDelete={handleDelete} />
+                            </div>
+                        ))
+                        : <Typography className={classes.error}>Loading...</Typography>}
                 </Masonry>
             </Container>
         </div>

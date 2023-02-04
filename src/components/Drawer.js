@@ -7,32 +7,34 @@ import ListItemText from '@mui/material/ListItemText';
 import AddCircleOutlined from '@mui/icons-material/AddCircleOutlined';
 import SubjectOutlined from '@mui/icons-material/SubjectOutlined';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useStyles } from '../Styles';
 
 export function DrawerBody({ open }) {
     const navigate = useNavigate();
     const location = useLocation();
+    const { classes } = useStyles();
 
     const menuItems = [
         {
             text: "My Notes",
-            icon: <SubjectOutlined color='secondary' />,
+            icon: <SubjectOutlined className={classes.drawerIcon} />,
             path: '/'
         },
         {
             text: "Create Note",
-            icon: <AddCircleOutlined color='secondary' />,
+            icon: <AddCircleOutlined className={classes.drawerIcon} />,
             path: '/create'
         }
     ]
 
     return (
         <div className="drawer-body">
-            <List>
+            <List className={classes.topicList}>
                 {menuItems.map(item => (
                     <ListItem
                         key={item.text}
                         onClick={() => navigate(item.path)}
-
+                        className={(location.pathname === item.path) ? classes.active : null}
                         disablePadding sx={{ display: 'block' }}
                     >
                         <ListItemButton
@@ -40,7 +42,6 @@ export function DrawerBody({ open }) {
                                 minHeight: 48,
                                 justifyContent: open ? 'initial' : 'center',
                                 px: 2.5,
-                                backgroundColor: (location.pathname === item.path) ? '#f4f4f4' : 'inherit'
                             }}
                         >
                             <ListItemIcon
@@ -52,7 +53,7 @@ export function DrawerBody({ open }) {
                             >
                                 {item.icon}
                             </ListItemIcon>
-                            <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
+                            <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} className={classes.drawerText} />
                         </ListItemButton>
                     </ListItem>
                 ))}

@@ -3,12 +3,14 @@ import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
 import CssBaseline from '@mui/material/CssBaseline';
 import IconButton from '@mui/material/IconButton';
-import { AppBarBody, AppBarToggleIcon } from './AppBar';
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftOutlinedIcon from '@mui/icons-material/ChevronLeftOutlined';
+import { AppBarBody } from './AppBar';
 import { DrawerBody } from './Drawer';
 import { Divider } from '@mui/material';
+import { useStyles } from '../Styles';
 
 const drawerWidth = 240;
 
@@ -51,7 +53,8 @@ const AppBar = styled(MuiAppBar, {
         duration: theme.transitions.duration.leavingScreen,
     }),
     // Turn toggle on / off
-    width: `calc(100% - ${!open ? theme.spacing(8) : drawerWidth+'px'})`,
+    width: `calc(100% - ${!open ? (parseInt(theme.spacing(8).replace(/\D/g, "")) + 1) : drawerWidth}px)`,
+    // width: `calc(100% - ${!open ? theme.spacing(8) : drawerWidth+'px'})`,
     ...(open && {
         marginLeft: drawerWidth,
         transition: theme.transitions.create(['width', 'margin'], {
@@ -80,32 +83,34 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function Layout({ children }) {
     const [open, setOpen] = React.useState(false);
+    const { classes } = useStyles();
 
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
 
-            <AppBar position="fixed" open={open}>
-                <Toolbar>
-                    
-                    <AppBarBody />
-                </Toolbar>
+            <AppBar position="fixed" open={open} className={classes.toolbar}>                    
+                <AppBarBody />
             </AppBar>
 
-            <Drawer variant="permanent" open={open}>
-                <DrawerHeader>
+            <Drawer variant="permanent" open={open} className={classes.drawer}>
+                <DrawerHeader className={classes.drawerHead}>
                     <IconButton
                         color="primary"
                         aria-label="open drawer"
                         onClick={() => setOpen(!open)}
                         edge="start"
+                        className={classes.drawerIcon}
                         sx={{
                             margin: 0,
                             marginLeft: 0.5
                         }}
                     >
-                        <AppBarToggleIcon />
+                        {(open) ? <ChevronLeftOutlinedIcon /> : <MenuIcon />}
                     </IconButton>
+                    <div className={classes.logoContainer}>
+                        {open && <img src={require('../images/logo.png')} alt='logo' className={classes.logo} />}
+                    </div>
                 </DrawerHeader>
                 <Divider />
                 <DrawerBody open={open} />
