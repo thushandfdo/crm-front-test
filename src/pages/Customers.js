@@ -1,31 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined';
-import { Stack } from '@mui/material';
+import { Grid, Stack } from '@mui/material';
 import { useStyles } from '../Styles';
 import { createAPIEndpoint, ENDPOINTS } from '../api';
-import { useNavigate } from 'react-router-dom';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import IconButton from '@mui/material/IconButton';
+import { Divider } from '@mui/material';
+import { DeleteOutlined } from '@mui/icons-material';
 
 function Customers() {
-    const navigate = useNavigate();
     const { classes } = useStyles();
+
     const [company, setCompany] = useState('');
     const [companyError, setCompanyError] = useState(false);
+
     const [contactPerson, setContactPerson] = useState('');
     const [contactPersonError, setContactPersonError] = useState(false);
-    const [contact, setContact] = useState('');
+
+    const [contactNo, setContact] = useState('');
     const [contactError, setContactError] = useState(false);
+
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState(false);
 
+    const [fetchError, setFetchError] = useState(false);
+    const [customers, setCustomers] = useState([]);
+
     const validateEmail = () => {
         var mailFormat = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-    
-        if(email === "" || !mailFormat.test(email)){
+
+        if (email === "" || !mailFormat.test(email)) {
             setEmailError(true);
         }
     }
@@ -39,19 +50,20 @@ function Customers() {
             setCompanyError(true);
         if (contactPerson === '')
             setContactPersonError(true)
-        if (contact === '')
+        if (contactNo === '')
             setContactError(true);
-        
+
         validateEmail();
 
         if (!(companyError || contactPersonError || contactError || emailError) && company) {
-            var data = { company, contactPerson, contact, email };
-
-            alert("Done");
+            var data = { company, contactPerson, contactNo, email };
 
             createAPIEndpoint(ENDPOINTS.customer)
                 .post(data)
-                .then(() => navigate('/'))
+                .then(() => {
+                    alert("Insertion Success...!");
+                    handleClear();
+                })
                 .catch(err => {
                     console.log(err);
                     alert('Insertion Failed..!');
@@ -74,11 +86,47 @@ function Customers() {
         setEmailError(false);
     };
 
+    const handleDelete = async (id) => {
+        await createAPIEndpoint(ENDPOINTS.customer)
+            .delete(id)
+            .then(res => {
+                if (res.status === 200) {
+                    const newCustomers = customers.filter(customer => customer.id !== id);
+                    setCustomers(newCustomers);
+                    return;
+                }
+                throw new Error("Customer can not be deleted..!");
+            })
+            .catch(err => {
+                alert("Deletion Error..!");
+                console.log(err);
+            });
+    };
+
+    useEffect(() => {
+        createAPIEndpoint(ENDPOINTS.customer)
+            .fetch()
+            .then(res => {
+                if (res.status === 200) {
+                    setFetchError(false);
+                    return res.data;
+                }
+                throw new Error("Can not fetch Customers...!")
+            })
+            .then(data => {
+                setCustomers(data);
+            })
+            .catch(err => {
+                setFetchError(true);
+                console.log(err);
+            });
+    }, []);
+
     const inputType = 'outlined';
 
     return (
         <div className='customers'>
-            <Container size='sm' className={classes.formContainer}>
+            <Container size='sm' className={classes.container}>
                 <form noValidate autoComplete='off' onSubmit={handleSubmit}>
                     <Typography
                         gutterBottom
@@ -121,8 +169,8 @@ function Customers() {
                         required
                         fullWidth
                         type='text'
-                        name='contact'
-                        value={contact}
+                        name='contactNo'
+                        value={contactNo}
                         label='Contact No'
                         variant={inputType}
                         color='secondary'
@@ -164,8 +212,41 @@ function Customers() {
                     </Stack>
                 </form>
             </Container>
+            <div></div>
+            <Grid container rowSpacing={2} className={classes.customerList}>
+                {(!fetchError)
+                    ? customers.map(customer => (
+                        <Grid item xs={12} key={customer.id}>
+                            <Card elevation={1} className={classes.customer}>
+                                <CardHeader
+                                    action={
+                                        <IconButton onClick={() => handleDelete(customer.id)}>
+                                            <DeleteOutlined />
+                                        </IconButton>
+                                    }
+                                    title={customer.company}
+                                    subheader={customer.contactPerson}
+                                />
+                                <div>
+                                    
+                                </div>
+                                <Divider />
+                                <div className={classes.customerContent}>
+                                    <Typography color='textSecondary' sx={{ textAlign: 'left' }}>
+                                        {customer.contactNo}
+                                    </Typography>
+                                    <Typography color='textSecondary' sx={{ textAlign: 'left' }}>
+                                        {customer.email}
+                                    </Typography>
+                                </div>
+                            </Card>
+                        </Grid>
+                    ))
+                    : <Typography className={classes.error}>Loading...</Typography>}
+            </Grid>
         </div>
     )
 }
 
 export default Customers;
+

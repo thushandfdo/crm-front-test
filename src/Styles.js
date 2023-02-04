@@ -5,16 +5,19 @@ import { buttonUnstyledClasses } from "@mui/base/ButtonUnstyled";
 import { Button } from '@mui/material';
 
 export const useStyles = makeStyles()((theme) => {
+    const cardBack = 'lightgray';
+    const cardRadius = theme.spacing(1);
+
     return {
         field: {
             marginTop: 20,
             marginBottom: 20,
             display: 'block'
         },
-        formContainer: {
-            backgroundColor: 'lightgray',
+        container: {
+            backgroundColor: cardBack,
             padding: theme.spacing(2),
-            borderRadius: theme.spacing(1),
+            borderRadius: cardRadius,
         },
         page: {
             backgroundColor: '#d2d4d9',
@@ -125,6 +128,19 @@ export const useStyles = makeStyles()((theme) => {
         },
         topicList: {
             paddingTop: 0
+        },
+        customerList: {
+            backgroundColor: 'lightgray',
+            borderRadius: cardRadius,
+            marginTop: 0,
+            paddingLeft: theme.spacing(2),
+            paddingRight: theme.spacing(2),
+            paddingBottom: theme.spacing(2),
+        },
+        // MuiCardContent-root css-bja8hb-MuiCardContent-root 
+        customerContent: {
+            padding: theme.spacing(1),
+            paddingLeft: theme.spacing(2)
         }
     }
 });

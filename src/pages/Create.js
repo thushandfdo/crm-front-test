@@ -58,7 +58,7 @@ export default function Create() {
 
     return (
         <div className='create'>
-            <Container size='sm' className={classes.formContainer}>
+            <Container size='sm' className={classes.container}>
                 <form noValidate autoComplete='off' onSubmit={handleSubmit}>
                     <Typography
                         gutterBottom
