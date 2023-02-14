@@ -1,8 +1,4 @@
-import { styled } from '@mui/system';
 import { makeStyles } from "tss-react/mui";
-import { blue, pink, green, yellow } from "@mui/material/colors";
-import { buttonUnstyledClasses } from "@mui/base/ButtonUnstyled";
-import { Button } from '@mui/material';
 
 export const useStyles = makeStyles()((theme) => {
     const cardBack = 'lightgray';
@@ -12,7 +8,7 @@ export const useStyles = makeStyles()((theme) => {
         field: {
             marginTop: 20,
             marginBottom: 20,
-            display: 'block'
+            display: 'block',
         },
         container: {
             backgroundColor: cardBack,
@@ -27,18 +23,6 @@ export const useStyles = makeStyles()((theme) => {
         },
         active: {
             backgroundColor: '#3b3b74'
-        },
-        yellowAvatar: {
-            backgroundColor: `${yellow[700]}`
-        },
-        greenAvatar: {
-            backgroundColor: `${green[500]}`
-        },
-        blueAvatar: {
-            backgroundColor: `${blue[500]}`
-        },
-        pinkAvatar: {
-            backgroundColor: `${pink[500]}`
         },
         noteCard: {
             backgroundColor: 'lightgray'
@@ -129,50 +113,59 @@ export const useStyles = makeStyles()((theme) => {
         topicList: {
             paddingTop: 0
         },
-        customerList: {
+        customerCard: {
             backgroundColor: 'lightgray',
-            borderRadius: cardRadius,
-            marginTop: 0,
-            paddingLeft: theme.spacing(2),
-            paddingRight: theme.spacing(2),
-            paddingBottom: theme.spacing(2),
         },
-        // MuiCardContent-root css-bja8hb-MuiCardContent-root 
         customerContent: {
             padding: theme.spacing(1),
             paddingLeft: theme.spacing(2)
-        }
+        },
+        addCustomerForm: {
+            backgroundColor: cardBack,
+            padding: theme.spacing(2),
+            borderRadius: cardRadius,
+        },
+        floatIcon: {
+            position: 'relative',
+            top: 0,
+            left: '-40px',
+            display: 'inline'
+        },
+        rightPanel: {
+            display: 'grid',
+            justifyContent: 'center'
+        },
+        toggleButtons: {
+            width: '100%',
+            marginBottom: theme.spacing(1),
+        },
+        searchBar: {
+            position: 'relative',
+            top: '-15px',
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            backgroundColor: '#cdcdcd',
+            padding: '5px',
+            paddingLeft: '20px',
+            borderRadius: '8px',
+        },
+        searchStack: {
+            // maxHeight: '24px', 
+            '& .MuiToggleButtonGroup-root': {
+                maxHeight: '24px',
+                '& .MuiToggleButton-root': {
+                    border: '1px solid gray',
+                }
+            }
+        },
+        // testToggle: {
+        //     '& .MuiToggleButton-root': {
+        //         padding: '10px',
+        //         margin: '20px',
+        //         border: '1px solid black',
+        //         borderRadius: '0px',
+        //         borderLeft: '1px solid black',
+        //     },
+        // }
     }
 });
-
-export const CustomButton = styled(Button)`
-  font-family: IBM Plex Sans, sans-serif;
-  font-weight: bold;
-  font-size: 0.875rem;
-  background-color: transparent;
-  padding: 12px 24px;
-  border-radius: 12px;
-  color: white;
-  transition: all 150ms ease;
-  cursor: pointer;
-  border: none;
-
-  &:hover {
-    background-color: transparent;
-  }
-
-  &.${buttonUnstyledClasses.active} {
-    background-color: transparent;
-    box-shadow: 0;
-  }
-
-  &.${buttonUnstyledClasses.focusVisible} {
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0), 0 0 0 0 rgba(0, 127, 255, 0);
-    outline: none;
-  }
-
-  &.${buttonUnstyledClasses.disabled} {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-`;

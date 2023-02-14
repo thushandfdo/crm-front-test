@@ -1,11 +1,11 @@
-import React from 'react'
+import React from 'react';
 
 function Projects() {
-  return (
-    <div className='projects'>
-        Inside Project Component
-    </div>
-  )
+    return (
+        <div className="projects">
+            Projects
+        </div>
+    )
 }
 
 export default Projects;
