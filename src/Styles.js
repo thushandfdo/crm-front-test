@@ -139,33 +139,28 @@ export const useStyles = makeStyles()((theme) => {
             width: '100%',
             marginBottom: theme.spacing(1),
         },
+        searchBarContainer: {
+            position: 'sticky',
+            top: '70px',
+            zIndex: 5,
+            backgroundColor: '#fff',
+            padding: '5px',
+            borderRadius: '8px',
+        },
         searchBar: {
-            position: 'relative',
-            top: '-15px',
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
             backgroundColor: '#cdcdcd',
             padding: '5px',
             paddingLeft: '20px',
             borderRadius: '8px',
+            columnGap: theme.spacing(1),
         },
         searchStack: {
-            // maxHeight: '24px', 
-            '& .MuiToggleButtonGroup-root': {
-                maxHeight: '24px',
-                '& .MuiToggleButton-root': {
-                    border: '1px solid gray',
-                }
+            '& .MuiToggleButtonGroup-root .MuiToggleButton-root': {
+                border: '1px solid gray',
+                padding: '2px 5px',
             }
         },
-        // testToggle: {
-        //     '& .MuiToggleButton-root': {
-        //         padding: '10px',
-        //         margin: '20px',
-        //         border: '1px solid black',
-        //         borderRadius: '0px',
-        //         borderLeft: '1px solid black',
-        //     },
-        // }
     }
 });

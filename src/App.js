@@ -7,6 +7,7 @@ import Projects from './pages/Projects';
 import Customers from './pages/Customers';
 import CustomersV1 from './pages/Customers_v1';
 import Test from './pages/Test';
+import Feedback from './pages/Feedback';
 
 const theme = createTheme({
     palette: {
@@ -27,6 +28,7 @@ function App() {
                             <Route path='/create' element={<Create />} />
                             <Route path='/projects' element={<Projects />} />
                             <Route path='/customers' element={<Customers />} />
+                            <Route path='/feedbacks' element={<Feedback />} />
                             <Route path='/customers_v1' element={<CustomersV1 />} />
                             <Route path='/test' element={<Test />} />
                         </Routes>

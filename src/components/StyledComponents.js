@@ -87,11 +87,11 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
         paddingLeft: `calc(1em + ${theme.spacing(4)})`,
         transition: theme.transitions.create('width'),
         width: '100%',
-        [theme.breakpoints.up('sm')]: {
+        [theme.breakpoints.down('990')]: {
             width: '12ch',
-            '&:focus': {
-                width: '20ch',
-            },
+            // '&:focus': {
+            //     width: '20ch',
+            // },
         },
     },
 }));

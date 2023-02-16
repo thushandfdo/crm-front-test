@@ -66,21 +66,16 @@ export function AppBarBody() {
                 </IconButton>
                 <Menu
                     sx={{
-                        mt: '45px',
                         '& .MuiMenu-paper': {
                             width: `${userWidth}px`
                         }
                     }}
                     anchorEl={anchorElUser}
                     anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
+                        vertical: 'bottom',
+                        horizontal: 'left',
                     }}
                     keepMounted
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                    }}
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                     className={classes.hiddenMenu}
