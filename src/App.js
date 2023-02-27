@@ -5,9 +5,10 @@ import { createTheme, ThemeProvider } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Projects from './pages/Projects';
 import Customers from './pages/Customers';
-import CustomersV1 from './pages/Customers_v1';
 import Test from './pages/Test';
 import Feedback from './pages/Feedback';
+import Newsletters from './pages/Newsletters';
+import Users from './pages/Users';
 
 const theme = createTheme({
     palette: {
@@ -24,12 +25,15 @@ function App() {
                 <Router>
                     <Layout>
                         <Routes>
-                            <Route path='/' element={<Notes />} />
-                            <Route path='/create' element={<Create />} />
-                            <Route path='/projects' element={<Projects />} />
-                            <Route path='/customers' element={<Customers />} />
-                            <Route path='/feedbacks' element={<Feedback />} />
-                            <Route path='/customers_v1' element={<CustomersV1 />} />
+                            {/* <Route element={ <Layout /> }> */}
+                                <Route path='/' element={<Notes />} />
+                                <Route path='/create' element={<Create />} />
+                                <Route path='/projects' element={<Projects />} />
+                                <Route path='/customers' element={<Customers />} />
+                                <Route path='/users' element={<Users />} />
+                                <Route path='/feedbacks' element={<Feedback />} />
+                                <Route path='/newsletters' element={<Newsletters />} />
+                            {/* </Route> */}
                             <Route path='/test' element={<Test />} />
                         </Routes>
                     </Layout>

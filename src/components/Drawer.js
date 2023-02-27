@@ -44,9 +44,9 @@ export function DrawerBody({ open }) {
             path: '/customers'
         },
         {
-            text: "Tech Leads",
+            text: "Users",
             icon: <SupportAgentOutlinedIcon className={classes.drawerIcon} />,
-            path: '/tech-leads'
+            path: '/users'
         },
         {
             text: "Reports",

@@ -162,5 +162,16 @@ export const useStyles = makeStyles()((theme) => {
                 padding: '2px 5px',
             }
         },
+        customerCardHeader: {
+            // position: 'relative',
+            // overflowX: 'hidden',
+            '& .MuiCardHeader-title': {
+                // position: 'absolute',
+                // left: 0,
+                // animation: 'slide 5s infinite linear',
+                // whiteSpace: 'nowrap',
+                // overflowX: 'hidden'
+            }
+        }
     }
 });
