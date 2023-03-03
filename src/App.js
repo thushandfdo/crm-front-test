@@ -1,11 +1,9 @@
-import Notes from './pages/Notes';
-import Create from './pages/Create';
 import Layout from './components/Layout';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Projects from './pages/Projects';
 import Customers from './pages/Customers';
-import Test from './pages/Test';
+import Test from './test/Test';
 import Feedback from './pages/Feedback';
 import Newsletters from './pages/Newsletters';
 import Users from './pages/Users';
@@ -26,9 +24,7 @@ function App() {
                     <Layout>
                         <Routes>
                             {/* <Route element={ <Layout /> }> */}
-                                <Route path='/' element={<Notes />} />
-                                <Route path='/create' element={<Create />} />
-                                <Route path='/projects' element={<Projects />} />
+                                <Route path='/' element={<Projects />} />
                                 <Route path='/customers' element={<Customers />} />
                                 <Route path='/users' element={<Users />} />
                                 <Route path='/feedbacks' element={<Feedback />} />

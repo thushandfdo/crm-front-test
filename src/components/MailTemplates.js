@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function TestPage({ name, username, password }) {
+export function NewCustomerTemplate({ name, username, password }) {
     const styles = {
         backgroundColor: 'gray',
         padding: '50px',

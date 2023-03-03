@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOMServer from "react-dom/server";
 import { sendEmail } from '../api';
-import NewCustomer from '../components/NewCustomer';
+import { NewCustomerTemplate } from '../components/MailTemplates';
 
 export const newCustomerMail = (Name, Address, username, password) => {
     const to = [
@@ -13,7 +13,7 @@ export const newCustomerMail = (Name, Address, username, password) => {
     const subject = 'Welcome to 99x..!';
 
     const content = ReactDOMServer.renderToString(
-        <NewCustomer name={Name} username={username} password={password} />
+        <NewCustomerTemplate name={Name} username={username} password={password} />
     );
 
     sendEmail(to, subject, content, null);

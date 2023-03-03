@@ -118,7 +118,7 @@ export default function Layout({ children }) {
                 <DrawerBody open={open} />
             </Drawer>
 
-            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+            <Box component="main" className={classes.layoutContent}>
                 <DrawerHeader />
                 {children}
             </Box>

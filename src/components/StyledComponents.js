@@ -1,21 +1,9 @@
 import { alpha, InputBase, styled } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
-import { blue, pink, green, yellow } from "@mui/material/colors";
-
-const getClass = (category) => {
-    switch (category) {
-        case 'money':
-            return green[500]
-        case 'todos':
-            return pink[500]
-        case 'reminders':
-            return blue[500]
-        case 'work':
-            return yellow[700]
-        default:
-            return yellow[700]
-    }
-}
+import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
+import MuiAccordion from '@mui/material/Accordion';
+import MuiAccordionSummary from '@mui/material/AccordionSummary';
+import MuiAccordionDetails from '@mui/material/AccordionDetails';
 
 export const NoteAvatar = styled(Avatar, {
     shouldForwardProp: (prop) => prop !== 'category'
@@ -94,4 +82,65 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
             // },
         },
     },
+}));
+
+export const Accordion = styled((props) => (
+    <MuiAccordion disableGutters elevation={0} {...props} />
+))(({ theme }) => ({
+    // border: `1px solid ${theme.palette.divider}`,
+    '&:not(:last-child)': {
+        borderBottom: 0,
+    },
+    '&:before': {
+        display: 'none',
+    },
+}));
+
+export const AccordionSummary = styled((props) => (
+    <MuiAccordionSummary
+    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />}
+    {...props}
+    />
+    ))(({ theme }) => ({
+    // borderRadius: theme.spacing(1),
+    backgroundColor: '#e6e6e6',
+    // theme.palette.mode === 'dark'
+    // ? 'rgba(255, 255, 255, .01)'
+    // : 'rgba(0, 0, 0, .03)',
+    flexDirection: 'row-reverse',
+    '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+        transform: 'rotate(90deg)',
+    },
+    '& .MuiAccordionSummary-content': {
+        marginLeft: theme.spacing(1),
+    },
+}));
+
+export const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+    padding: theme.spacing(2),
+    borderTop: '1px solid rgba(0, 0, 0, .125)',
+    // borderRadius: theme.spacing(1),
+}));
+
+const getClass = (status) => {
+    switch (status.toLowerCase()) {
+        case 'ongoing':
+            return '#0e8a16'
+        case 'suspended':
+            return '#b60205'
+        case 'completed':
+            return '#3e4b9e'
+        default:
+            return 'lightgray'
+    }
+}
+
+export const ProjectStatus = styled('span', {
+    shouldForwardProp: (prop) => prop !== 'status'
+})(({ status }) => ({
+    backgroundColor: `${getClass(status)}`,
+    display: 'inline',
+    padding: '3px',
+    borderRadius: '4px',
+    color: '#fff',
 }));

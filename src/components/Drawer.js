@@ -4,8 +4,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import AddCircleOutlined from '@mui/icons-material/AddCircleOutlined';
-import SubjectOutlined from '@mui/icons-material/SubjectOutlined';
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 import SupervisedUserCircleOutlinedIcon from '@mui/icons-material/SupervisedUserCircleOutlined';
 import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
@@ -24,19 +22,9 @@ export function DrawerBody({ open }) {
 
     const menuItems = [
         {
-            text: "My Notes",
-            icon: <SubjectOutlined className={classes.drawerIcon} />,
-            path: '/'
-        },
-        {
-            text: "Create Note",
-            icon: <AddCircleOutlined className={classes.drawerIcon} />,
-            path: '/create'
-        },
-        {
             text: "Project Details",
             icon: <AccountTreeOutlinedIcon className={classes.drawerIcon} />,
-            path: '/projects'
+            path: '/'
         },
         {
             text: "Customers",
@@ -47,6 +35,11 @@ export function DrawerBody({ open }) {
             text: "Users",
             icon: <SupportAgentOutlinedIcon className={classes.drawerIcon} />,
             path: '/users'
+        },
+        {
+            text: "End Users",
+            icon: <PermContactCalendarOutlinedIcon className={classes.drawerIcon} />,
+            path: '/end-users'
         },
         {
             text: "Reports",
@@ -67,11 +60,6 @@ export function DrawerBody({ open }) {
             text: "Payments",
             icon: <PaidOutlinedIcon className={classes.drawerIcon} />,
             path: '/payments'
-        },
-        {
-            text: "End Users",
-            icon: <PermContactCalendarOutlinedIcon className={classes.drawerIcon} />,
-            path: '/end-users'
         }
     ]
 

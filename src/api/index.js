@@ -5,7 +5,9 @@ export const BASE_URL = 'https://localhost:7143/';
 export const ENDPOINTS = {
     note : 'Note',
     customer : 'Customer',
-    userCustomer: 'DTOUserCustomer',
+    userCustomer : 'DTOUserCustomer',
+    user : 'User',
+    project : 'Project'
 }
 
 export const createAPIEndpoint = (endpoint) => {
@@ -15,7 +17,7 @@ export const createAPIEndpoint = (endpoint) => {
         fetch : () => axios.get(url),
         fetchById : (id) => axios.get(url + '/' + id),
         post : (newRecord) => axios.post(url, newRecord),
-        put : (id, updateRecord) => axios.put(url + '?customerId=' + id, updateRecord),
+        put : (id, updateRecord) => axios.put(url + '/' + id, updateRecord),
         delete : (id) => axios.delete(url + '/' + id)
     }
 }

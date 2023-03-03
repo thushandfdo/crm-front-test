@@ -169,7 +169,7 @@ function Customers() {
             var data = {
                 type: "Customer",
                 username, password, firstName, lastName, contactNo, email,
-                profilePic: ' ', company
+                profilePic: '-', company
             };
 
             createAPIEndpoint(ENDPOINTS.userCustomer)
@@ -195,7 +195,7 @@ function Customers() {
             .delete(id)
             .then(res => {
                 if (res.status === 200) {
-                    const newCustomers = customers.filter(customer => customer.id !== id);
+                    const newCustomers = customers.filter(customer => customer.userId !== id);
                     setCustomers(newCustomers);
                     loadData();
                     return;
@@ -248,7 +248,7 @@ function Customers() {
                     })
                     .catch(err => {
                         console.log(err);
-                        alert('Insert Failed..!');
+                        alert('Update Failed..!');
                     });
             }
 
@@ -321,8 +321,6 @@ function Customers() {
                                     subheader={customer.firstName + " " + customer.lastName}
                                     className={classes.customerCardHeader}
                                 />
-                                <div>
-                                </div>
                                 <Divider />
                                 <div className={classes.customerContent}>
                                     <Typography color='textSecondary' sx={{ textAlign: 'left' }}>

@@ -1,10 +1,19 @@
 import { makeStyles } from "tss-react/mui";
+import backimage from './images/page-back.svg';
 
 export const useStyles = makeStyles()((theme) => {
     const cardBack = 'lightgray';
     const cardRadius = theme.spacing(1);
 
     return {
+        layoutContent: {
+            flexGrow: 1,
+            padding: theme.spacing(3),
+            minHeight: '100vh', 
+            backgroundImage: `url(${backimage})`,
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover',
+        },
         field: {
             marginTop: 20,
             marginBottom: 20,
@@ -172,6 +181,12 @@ export const useStyles = makeStyles()((theme) => {
                 // whiteSpace: 'nowrap',
                 // overflowX: 'hidden'
             }
+        },
+        projectFormContainer: {
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            columnGap: '50px',
+            width: '100%'
         }
     }
 });
