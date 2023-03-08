@@ -18,6 +18,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { generate } from '@wcj/generate-password';
 import { newCustomerMail } from './Newsletters';
 
+import { loadCustomers } from '../store/customerHandle';
+import store from '../store/_storeConfig';
+import { useSelector } from 'react-redux';
+
 function Customers() {
     const { classes } = useStyles();
 
@@ -46,7 +50,8 @@ function Customers() {
     var pError = false;
 
     const [fetchError, setFetchError] = useState(false);
-    const [customers, setCustomers] = useState([]);
+    // const [customers, setCustomers] = useState([]);
+    const customers = useSelector((state) => state.entities.customers.list);
 
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState('company');
@@ -196,7 +201,7 @@ function Customers() {
             .then(res => {
                 if (res.status === 200) {
                     const newCustomers = customers.filter(customer => customer.userId !== id);
-                    setCustomers(newCustomers);
+                    // setCustomers(newCustomers);
                     loadData();
                     return;
                 }
@@ -268,7 +273,7 @@ function Customers() {
                 throw new Error("Can not fetch Customers...!")
             })
             .then(data => {
-                setCustomers(data);
+                // setCustomers(data);
             })
             .catch(err => {
                 setFetchError(true);
@@ -374,7 +379,8 @@ function Customers() {
     ]
 
     useEffect(() => {
-        loadData();
+        // loadData();
+        store.dispatch(loadCustomers());
     }, []);
 
     useEffect(() => {

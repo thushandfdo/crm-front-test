@@ -1,46 +1,8 @@
 import { alpha, InputBase, styled } from '@mui/material';
-import Avatar from '@mui/material/Avatar';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import MuiAccordion from '@mui/material/Accordion';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
-
-export const NoteAvatar = styled(Avatar, {
-    shouldForwardProp: (prop) => prop !== 'category'
-})(({ category }) => ({
-    backgroundColor: `${getClass(category)}`
-}));
-
-const panelOpen = (theme) => ({
-    transition: theme.transitions.create('width', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
-    }),
-    width: '100%',
-});
-
-const panelClose = (theme) => ({
-    transition: theme.transitions.create('width', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-    }),
-    width: 0,
-});
-
-export const EmptyRightPanel = styled('div')(
-    ({ theme, open }) => ({
-        // display: 'absolute',
-        // top: 0,
-        // display: 'inline-block',
-        ...(open && {
-            ...panelOpen(theme),
-        }),
-        ...(!open && {
-            ...panelClose(theme),
-        }),
-        overflowX: 'hidden',
-    }),
-);
 
 export const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -52,7 +14,6 @@ export const Search = styled('div')(({ theme }) => ({
     marginLeft: 0,
     width: '100%',
     [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(1),
         width: 'auto',
     },
 }));

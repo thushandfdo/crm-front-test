@@ -7,6 +7,8 @@ import Test from './test/Test';
 import Feedback from './pages/Feedback';
 import Newsletters from './pages/Newsletters';
 import Users from './pages/Users';
+import Home from './pages/Home';
+import EndUsers from './pages/EndUsers';
 
 const theme = createTheme({
     palette: {
@@ -24,9 +26,11 @@ function App() {
                     <Layout>
                         <Routes>
                             {/* <Route element={ <Layout /> }> */}
-                                <Route path='/' element={<Projects />} />
+                                <Route path='/' element={<Home />} />
+                                <Route path='/projects' element={<Projects />} />
                                 <Route path='/customers' element={<Customers />} />
                                 <Route path='/users' element={<Users />} />
+                                <Route path='/end-users' element={<EndUsers />} />
                                 <Route path='/feedbacks' element={<Feedback />} />
                                 <Route path='/newsletters' element={<Newsletters />} />
                             {/* </Route> */}

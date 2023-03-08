@@ -24,7 +24,7 @@ export function DrawerBody({ open }) {
         {
             text: "Project Details",
             icon: <AccountTreeOutlinedIcon className={classes.drawerIcon} />,
-            path: '/'
+            path: '/projects'
         },
         {
             text: "Customers",

@@ -91,7 +91,7 @@ function Projects() {
         1100: 3,
         830: 2
     }
-
+    
     const loadData = () => {
         createAPIEndpoint(ENDPOINTS.project)
             .fetch()

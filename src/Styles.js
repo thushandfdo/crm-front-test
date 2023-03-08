@@ -9,7 +9,7 @@ export const useStyles = makeStyles()((theme) => {
         layoutContent: {
             flexGrow: 1,
             padding: theme.spacing(3),
-            minHeight: '100vh', 
+            minHeight: '100vh',
             backgroundImage: `url(${backimage})`,
             backgroundRepeat: 'no-repeat',
             backgroundSize: 'cover',
@@ -32,9 +32,6 @@ export const useStyles = makeStyles()((theme) => {
         },
         active: {
             backgroundColor: '#3b3b74'
-        },
-        noteCard: {
-            backgroundColor: 'lightgray'
         },
         avatar: {
             marginLeft: theme.spacing(2)
@@ -129,25 +126,6 @@ export const useStyles = makeStyles()((theme) => {
             padding: theme.spacing(1),
             paddingLeft: theme.spacing(2)
         },
-        addCustomerForm: {
-            backgroundColor: cardBack,
-            padding: theme.spacing(2),
-            borderRadius: cardRadius,
-        },
-        floatIcon: {
-            position: 'relative',
-            top: 0,
-            left: '-40px',
-            display: 'inline'
-        },
-        rightPanel: {
-            display: 'grid',
-            justifyContent: 'center'
-        },
-        toggleButtons: {
-            width: '100%',
-            marginBottom: theme.spacing(1),
-        },
         searchBarContainer: {
             position: 'sticky',
             top: '70px',
@@ -171,22 +149,36 @@ export const useStyles = makeStyles()((theme) => {
                 padding: '2px 5px',
             }
         },
-        customerCardHeader: {
-            // position: 'relative',
-            // overflowX: 'hidden',
-            '& .MuiCardHeader-title': {
-                // position: 'absolute',
-                // left: 0,
-                // animation: 'slide 5s infinite linear',
-                // whiteSpace: 'nowrap',
-                // overflowX: 'hidden'
-            }
-        },
         projectFormContainer: {
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
             columnGap: '50px',
             width: '100%'
+        },
+        endUserContainer: {
+            display: 'grid',
+            gridTemplateColumns: '1fr 400px',
+            columnGap: '20px',
+        },
+        endUserFormContainer: {
+            
+        },
+        endUserSearchDiv: {
+            minHeight: '82vh',
+            backgroundColor: 'lightgray',
+            borderRadius: theme.spacing(2),
+            padding: theme.spacing(2),
+        },
+        euSearch: {
+            width: '100%',
+            '& .MuiToggleButtonGroup-root': {
+                padding: theme.spacing(1)
+            },
+            '& .MuiToggleButtonGroup-root .MuiToggleButton-root': {
+                border: '1px solid gray',
+                padding: '2px 5px',
+                width: '100%',
+            }
         }
     }
 });
