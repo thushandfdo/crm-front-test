@@ -15,26 +15,56 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDownOutlined';
 import KeyboardArrowUpOutlinedIcon from '@mui/icons-material/KeyboardArrowUpOutlined';
+import store from '../store/_storeConfig';
+import { useSelector } from 'react-redux';
+import { setCustomerData, sortCustomers } from '../store/customerHandle';
+import { setUserData, sortUsers } from '../store/userHandle';
+import { setProjectData, sortProjects } from '../store/projectHandle';
 
-export default function SearchBar({ 
-    sortFieldList, searchByList,
-    open, setOpen,
-    sortField, setSortField,
-    descending, setDescending,
-    search, setSearch,
-    category, setCategory
-}) {
+export default function SearchBar({ page, search, setSearch }) {
+    var setData = null;
+    var sort = null;
+
+    switch (page) {
+        case 'customers':
+            setData = setCustomerData;
+            sort = sortCustomers;
+            break;
+        case 'users':
+            setData = setUserData;
+            sort = sortUsers;
+            break;
+        case 'projects':
+            setData = setProjectData;
+            sort = sortProjects;
+            break;
+        default:
+            alert('Invalid page type...!');
+    }
 
     const { classes } = useStyles();
     const [anchorElUser, setAnchorElUser] = useState(null);
     const [drop, setDrop] = useState(false);
     const searchBoxRef = useRef(null);
 
+    const sortFieldList = useSelector((state) => state.entities[page].sortFields);
+    const searchByList = useSelector((state) => state.entities[page].searchParams);
+    const sortField = useSelector((state) => state.entities[page].variables.sortField);
+    const category = useSelector((state) => state.entities[page].variables.category);
+    const descending = useSelector((state) => state.entities[page].variables.descending);
+    const open = useSelector((state) => state.entities[page].variables.open);
+
     const handleSort = (event, newSort) => {
         if (newSort !== null) {
-            setSortField(newSort);
+            store.dispatch(setData('sortField', newSort));
+            store.dispatch(sort());
         }
     };
+
+    const handleDescending = () => {
+        store.dispatch(setData('descending', descending * -1));
+        store.dispatch(sort());
+    }
 
     const showSearchMenu = () => {
         setAnchorElUser(searchBoxRef.current);
@@ -71,7 +101,7 @@ export default function SearchBar({
                 <ToggleButtonGroup
                     exclusive
                     value={(descending === -1) ? 'descending' : null}
-                    onChange={() => setDescending(descending*-1)}
+                    onChange={handleDescending}
                 >
                     <ToggleButton value="descending">
                         descending
@@ -116,15 +146,15 @@ export default function SearchBar({
                         <RadioGroup
                             value={category}
                             onChange={(e) => {
-                                setCategory(e.target.value);
+                                store.dispatch(setData('category', e.target.value));
                                 hideSearchMenu();
                             }}
                         >
                             {searchByList.map(searchBy => (
-                                <FormControlLabel 
-                                    value={searchBy.value} 
-                                    control={<Radio />} 
-                                    label={searchBy.text} 
+                                <FormControlLabel
+                                    value={searchBy.value}
+                                    control={<Radio />}
+                                    label={searchBy.text}
                                     key={searchBy.value}
                                 />
                             ))}
@@ -132,7 +162,7 @@ export default function SearchBar({
                     </FormControl>
                 </Menu>
                 <IconButton
-                    onClick={() => setOpen(!open)}
+                    onClick={() => store.dispatch(setData('open', !open))}
                 >
                     <AddCircleOutlined />
                 </IconButton>

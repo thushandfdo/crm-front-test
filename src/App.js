@@ -10,6 +10,12 @@ import Users from './pages/Users';
 import Home from './pages/Home';
 import EndUsers from './pages/EndUsers';
 
+import store from './store/_storeConfig';
+import { loadProjects } from './store/projectHandle';
+import { loadUsers } from './store/userHandle';
+import { loadCustomers } from './store/customerHandle';
+import { useEffect } from 'react';
+
 const theme = createTheme({
     palette: {
         secondary: {
@@ -19,6 +25,12 @@ const theme = createTheme({
 });
 
 function App() {
+    useEffect(() => {
+        store.dispatch(loadCustomers());
+        store.dispatch(loadUsers());
+        store.dispatch(loadProjects());
+    }, []);
+
     return (
         <div className="App">
             <ThemeProvider theme={theme}>

@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useStyles } from '../Styles';
 import { CardHeader, Divider } from '@mui/material';
-import { createAPIEndpoint, ENDPOINTS } from '../api';
 import { DeleteOutlined, EditOutlined } from '@mui/icons-material';
 import { Accordion, AccordionSummary, AccordionDetails, ProjectStatus }
     from '../components/StyledComponents';
@@ -20,153 +19,97 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { useSelector } from 'react-redux';
+import store from '../store/_storeConfig';
+import { 
+    addProject, 
+    clearData, 
+    getProject, 
+    removeProject, 
+    setProjectData, 
+    statusTypes, 
+    updateProject 
+} from '../store/projectHandle';
+import { getUser } from '../store/userHandle';
+import { getCustomer } from '../store/customerHandle';
 
 function Projects() {
     const { classes } = useStyles();
     const [expanded, setExpanded] = useState();
     const [expandProject, setExpandProject] = useState();
 
-    const [projects, setProjects] = useState([]);
-    const [users, setUsers] = useState([]);
-    const [customers, setCustomers] = useState([]);
-    const [fetchError, setFetchError] = useState(false);
+    const { 
+        name,
+        fee,
+        duration, 
+        startDate, 
+        installments,
+        status, 
+        description,
+        techLeadId,
+        techLead,
+        customerId,
+        customer,
+        category,
+        sortField,
+        descending,
+        open 
+    } = useSelector((state) => state.entities.projects.variables);
 
-    const [name, setName] = useState('');
+    const projects = useSelector(state => state.entities.projects.list);
+    const users = useSelector(state => state.entities.users.list);
+    const customers = useSelector(state => state.entities.customers.list);
+    const isProjectsLoading = useSelector(state => state.entities.projects.loading);
+
     const [nameError, setNameError] = useState(false);
     var nError = false;
 
-    const [fee, setFee] = useState('');
     const [feeError, setFeeError] = useState(false);
     var fError = false;
 
-    const [duration, setDuration] = useState('');
     const [durationError, setDurationError] = useState(false);
     var duError = false;
 
-    const [startDate, setStartDate] = useState(new Date());
     const [startDateError, setStartDateError] = useState(false);
     var sdError = false;
 
-    const [installments, setInstallments] = useState('');
     const [installmentsError, setInstallmentsError] = useState(false);
     var iError = false;
 
-    const [status, setStatus] = useState('');
     const [statusError, setStatusError] = useState(false);
     var sError = false;
 
-    const [description, setDescription] = useState('');
     const [descriptionError, setDescriptionError] = useState(false);
     var dError = false;
 
-    const [techLeadId, setTechLeadId] = useState('');
-    const [techLeadError, setTechLeadError] = useState(false);
     var tlError = false;
-    const [techLead, setTechLead] = useState(null);
+    const [techLeadError, setTechLeadError] = useState(false);
 
-    const [customerId, setCustomerId] = useState('');
     const [customerError, setCustomerError] = useState(false);
     var cError = false;
-    const [customer, setCustomer] = useState(null);
 
     const [search, setSearch] = useState('');
-    const [category, setCategory] = useState('name');
-
-    const [sortField, setSortField] = useState('name');
-    const [descending, setDescending] = useState(1);
-
-    const [open, setOpen] = useState(false);
-
+    
     const [isUpdate, setIsUpdate] = useState(false);
     const [updateId, setUpdateId] = useState(null);
 
     const fullWidth = true;
-
-    useEffect(() => {
-        loadData();
-    }, []);
 
     const breakpoints = {
         default: 4,
         1100: 3,
         830: 2
     }
-    
-    const loadData = () => {
-        createAPIEndpoint(ENDPOINTS.project)
-            .fetch()
-            .then(res => {
-                if (res.status === 200) {
-                    setFetchError(false);
-                    return res.data;
-                }
-                throw new Error("Can not fetch Projects...!")
-            })
-            .then(data => {
-                setProjects(data);
-            })
-            .catch(err => {
-                setFetchError(true);
-                console.log(err);
-            });
-
-        createAPIEndpoint(ENDPOINTS.customer)
-            .fetch()
-            .then(res => {
-                if (res.status === 200) {
-                    setFetchError(false);
-                    return res.data;
-                }
-                throw new Error("Can not fetch Customers...!")
-            })
-            .then(data => {
-                setCustomers(data);
-            })
-            .catch(err => {
-                setFetchError(true);
-                console.log(err);
-            });
-
-        createAPIEndpoint(ENDPOINTS.user)
-            .fetch()
-            .then(res => {
-                if (res.status === 200) {
-                    setFetchError(false);
-                    return res.data;
-                }
-                throw new Error("Can not fetch Tech Leads...!")
-            })
-            .then(data => {
-                setUsers(data);
-                // setTechLead(data.filter(e => e.type === 'Tech Lead')[0]);
-                // setTechLeadId(techLead.userId);
-                // setCustomer(data.filter(e => e.type === 'Customer')[0]);
-                // setCustomerId(customer.userId);
-            })
-            .catch(err => {
-                setFetchError(true);
-                console.log(err);
-            });
-    };
 
     const handleClear = () => {
-        setName('');
-        setFee('');
-        setDuration('');
-        setDescription('');
-
-        setTechLeadId('');
-        setTechLead(null);
-        setCustomerId('');
-        setCustomer(null);
-        setStartDate(new Date());
-        setStatus('');
-        setInstallments('');
-
+        store.dispatch(clearData());
+        
+        setSearch('');
+        setUpdateId('');
+        clearErrors();
+        
         if (!isUpdate)
             setIsUpdate(false);
-
-        clearErrors();
     };
 
     const clearErrors = () => {
@@ -194,7 +137,7 @@ function Projects() {
     const checkOnlyNumbers = (e, setField) => {
         const regex = /^[0-9\b]+$/;
         if (e.target.value === "" || regex.test(e.target.value)) {
-            setField(e.target.value);
+            store.dispatch(setProjectData(setField, e.target.value));
         }
     };
 
@@ -216,7 +159,6 @@ function Projects() {
             duError = true;
         }
 
-        console.log(startDate);
         if (startDate === '' || startDate === null) {
             setStartDateError(true);
             sdError = true;
@@ -253,7 +195,7 @@ function Projects() {
             return false;
     }
 
-    const saveProject = (e) => {
+    const handleSave = (e) => {
         e.preventDefault();
 
         if (validateForm()) {
@@ -262,69 +204,39 @@ function Projects() {
                 description, techLeadId, customerId
             };
 
-            console.log(data);
-
-            createAPIEndpoint(ENDPOINTS.project)
-                .post(data)
-                .then((res) => {
-                    if (res.status === 200) {
-                        handleClear();
-                        setOpen(!open);
-                        loadData();
-                        console.log('User saved...!');
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                    alert('Insert Failed..!');
-                });
+            store.dispatch(addProject(data));
+            handleClear();
+            store.dispatch(setProjectData('open', !open));
         }
     };
 
-    const deleteProject = async (id) => {
-        await createAPIEndpoint(ENDPOINTS.project)
-            .delete(id)
-            .then(res => {
-                if (res.status === 200) {
-                    const newProjects = projects.filter(project => project.projectId !== id);
-                    setUsers(newProjects);
-                    loadData();
-                    return;
-                }
-                throw new Error("Project can not be deleted..!");
-            })
-            .catch(err => {
-                alert("Deletion Error..!");
-                console.log(err);
-            });
+    const handleDelete = (id) => {
+        store.dispatch(removeProject(id));
     };
 
     const setToUpdate = (id) => {
-        const project = projects.find(p => p.projectId === id);
+        const project = getProject(id)(store.getState());
 
-        setName(project.name);
-        setFee(project.fee);
-        setDuration(project.duration);
-        setDescription(project.description);
-        setTechLeadId(project.techLeadId);
-        setCustomerId(project.customerCard);
-        setStartDate(project.startDate);
-        setStatus(project.status);
-        setInstallments(project.installments);
+        store.dispatch(setProjectData('name', project.name));
+        store.dispatch(setProjectData('fee', project.fee));
+        store.dispatch(setProjectData('duration', project.duration));
+        store.dispatch(setProjectData('description', project.description));
+        store.dispatch(setProjectData('techLeadId', project.techLeadId));
+        store.dispatch(setProjectData('customerId', project.customerId));
+        store.dispatch(setProjectData('startDate', project.startDate));
+        store.dispatch(setProjectData('status', project.status));
+        store.dispatch(setProjectData('installments', project.installments));
+        store.dispatch(setProjectData('open', !open));
+        store.dispatch(setProjectData('techLead', getUser(project.techLeadId)(store.getState())));
+        store.dispatch(setProjectData('customer', getCustomer(project.customerId)(store.getState())));
 
-        setOpen(true);
         setIsUpdate(true);
         setUpdateId(id);
-
-        var user = users.find(u => u.userId === project.techLeadId);
-        setTechLead(user);
-        user = users.find(u => u.userId === project.customerId);
-        setCustomer(user)
     };
 
-    const updateProject = () => {
+    const handleUpdate = () => {
         if (validateForm()) {
-            var project = projects.find(pro => pro.projectId === updateId);
+            var project = getProject(updateId)(store.getState());
 
             if (
                 project.name === name &&
@@ -345,19 +257,10 @@ function Projects() {
                     description, techLeadId, customerId
                 };
 
-                createAPIEndpoint(ENDPOINTS.project)
-                    .put(updateId, data)
-                    .then(() => {
-                        handleClear();
-                        loadData();
-                    })
-                    .catch(err => {
-                        console.log(err);
-                        alert('Update Failed..!');
-                    });
+                store.dispatch(updateProject(updateId, data));
             }
 
-            setOpen(!open);
+            store.dispatch(setProjectData('open', !open));
             setIsUpdate(!isUpdate);
         }
     }
@@ -379,8 +282,7 @@ function Projects() {
     }
 
     const formatDate = (date) => {
-        var options = { year: 'numeric', month: 'long', day: 'numeric' };
-        return new Date(date).toLocaleDateString([], options);
+        return new Date(date).toLocaleDateString("sv-SE");
     }
 
     const filterProject = (project) => {
@@ -448,7 +350,7 @@ function Projects() {
                 className="my-masonry-grid"
                 columnClassName="my-masonry-grid_column"
             >
-                {(!fetchError)
+                {(!isProjectsLoading)
                     ? projects
                         .filter(project => filterProject(project))
                         .sort((p1, p2) => sortProject(p1, p2))
@@ -460,7 +362,7 @@ function Projects() {
                                             <IconButton onClick={() => setToUpdate(project.projectId)}>
                                                 <EditOutlined />
                                             </IconButton>
-                                            <IconButton onClick={() => deleteProject(project.projectId)}>
+                                            <IconButton onClick={() => handleDelete(project.projectId)}>
                                                 <DeleteOutlined />
                                             </IconButton>
                                         </Stack>
@@ -523,65 +425,16 @@ function Projects() {
     };
 
     const handleDialogClose = () => {
-        setOpen(!open);
+        store.dispatch(setProjectData('open', !open));
         setIsUpdate(false);
         handleClear();
     };
-
-    const sortFieldList = [
-        {
-            value: 'name',
-            text: 'Project'
-        },
-        {
-            value: 'company',
-            text: 'Company'
-        },
-        {
-            value: 'contactPerson',
-            text: 'Contact Person'
-        },
-        {
-            value: 'techLead',
-            text: 'Tech Lead'
-        },
-    ]
-
-    const searchByList = [
-        {
-            value: 'name',
-            text: 'by Project'
-        },
-        {
-            value: 'company',
-            text: 'by Company'
-        },
-        {
-            value: 'contactPerson',
-            text: 'by Contact Person'
-        },
-        {
-            value: 'status',
-            text: 'by Status'
-        },
-        {
-            value: 'techLead',
-            text: 'by Tech Lead'
-        }
-    ];
-
-    const projectStatus = ['Ongoing', 'Suspended', 'Completed'];
 
     return (
         <div className="projects">
             <div className={classes.searchBarContainer}>
                 <SearchBar
-                    sortFieldList={sortFieldList} searchByList={searchByList}
-                    open={open} setOpen={setOpen}
-                    sortField={sortField} setSortField={setSortField}
-                    descending={descending} setDescending={setDescending}
-                    search={search} setSearch={setSearch}
-                    category={category} setCategory={setCategory}
+                    page='projects' search={search} setSearch={setSearch}
                 />
             </div>
             <Dialog
@@ -609,7 +462,7 @@ function Projects() {
                                 color='secondary'
                                 error={nameError}
                                 helperText={nameError ? "Can not be Empty" : null}
-                                onChange={(e) => setName(e.target.value)}
+                                onChange={(e) => store.dispatch(setProjectData('name', e.target.value))}
                             />
 
                             <TextField
@@ -624,7 +477,7 @@ function Projects() {
                                 className={classes.field}
                                 error={feeError}
                                 helperText={feeError ? "Can not be Empty" : null}
-                                onChange={(e) => checkOnlyNumbers(e, setFee)}
+                                onChange={(e) => checkOnlyNumbers(e, 'fee')}
                             />
 
                             <TextField
@@ -639,15 +492,16 @@ function Projects() {
                                 className={classes.field}
                                 error={durationError}
                                 helperText={durationError ? "Can not be Empty" : null}
-                                onChange={(e) => checkOnlyNumbers(e, setDuration)}
+                                onChange={(e) => checkOnlyNumbers(e, 'duration')}
+
                             />
 
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DesktopDatePicker
                                     label="Start Date"
-                                    inputFormat="MM/DD/YYYY"
+                                    inputFormat="DD/MM/YYYY"
                                     value={startDate}
-                                    onChange={(value) => setStartDate(value)}
+                                    onChange={(value) => store.dispatch(setProjectData('startDate', formatDate(value)))}
                                     renderInput={(params) =>
                                         <TextField {...params}
                                             fullWidth
@@ -672,7 +526,7 @@ function Projects() {
                                 className={classes.field}
                                 error={installmentsError}
                                 helperText={installmentsError ? "Can not be Empty" : null}
-                                onChange={(e) => checkOnlyNumbers(e, setInstallments)}
+                                onChange={(e) => checkOnlyNumbers(e, 'installments')}
                             />
                         </div>
                         <div className={classes.projectFormDiv}>
@@ -680,10 +534,10 @@ function Projects() {
                                 <Autocomplete
                                     value={status}
                                     onChange={(event, newValue) => {
-                                        setStatus(newValue);
+                                        store.dispatch(setProjectData('status', newValue));
                                     }}
                                     disablePortal
-                                    options={projectStatus}
+                                    options={statusTypes}
                                     renderInput={({ inputProps, ...rest }) =>
                                         <TextField {...rest}
                                             required
@@ -698,20 +552,18 @@ function Projects() {
                                 />
                                 {statusError && <span style={{ color: '#d32f2f', fontSize: '12px' }}>Select a project Status</span>}
                             </div>
-
                             <div className={classes.field}>
                                 <Autocomplete
                                     options={users.filter(user => user.type === 'Tech Lead')}
                                     getOptionLabel={(option) => option.firstName + ' ' + option.lastName}
                                     value={techLead}
                                     onChange={(event, value) => {
-                                        setTechLead(value);
-                                        setTechLeadId(value !== null ? value.userId : '');
+                                        store.dispatch(setProjectData('techLead', value));
+                                        store.dispatch(setProjectData('techLeadId', (value !== null ? value.userId : '')));
                                     }}
                                     renderInput={({ inputProps, ...rest }) =>
                                         <TextField {...rest}
                                             required
-                                            fullWidth
                                             name='type'
                                             label='Tech Lead'
                                             variant='standard'
@@ -725,17 +577,16 @@ function Projects() {
 
                             <div className={classes.field}>
                                 <Autocomplete
-                                    options={users.filter(user => user.type === 'Customer')}
-                                    getOptionLabel={(option) => option.firstName + ' ' + option.lastName}
+                                    options={customers}
+                                    getOptionLabel={(option) => option.company}
                                     value={customer}
                                     onChange={(event, value) => {
-                                        setCustomer(value);
-                                        setCustomerId(value !== null ? value.userId : '');
+                                        store.dispatch(setProjectData('customer', value));
+                                        store.dispatch(setProjectData('customerId', (value !== null ? value.userId : '')));
                                     }}
                                     renderInput={({ inputProps, ...rest }) =>
                                         <TextField {...rest}
                                             required
-                                            fullWidth
                                             name='type'
                                             label='Customer'
                                             variant='standard'
@@ -761,7 +612,7 @@ function Projects() {
                                 className={classes.field}
                                 error={descriptionError}
                                 helperText={descriptionError ? "Can not be Empty" : null}
-                                onChange={(e) => setDescription(e.target.value)}
+                                onChange={(e) => store.dispatch(setProjectData('description', e.target.value))}
                             />
                         </div>
                     </div>
@@ -782,7 +633,7 @@ function Projects() {
 
                         <Button
                             variant='contained'
-                            onClick={(isUpdate) ? updateProject : saveProject}
+                            onClick={(isUpdate) ? handleUpdate : handleSave}
                         >
                             {(isUpdate) ? 'Update' : 'Save'}
                         </Button>

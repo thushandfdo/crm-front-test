@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useStyles } from '../Styles';
-import { createAPIEndpoint, ENDPOINTS } from '../api';
 import { DeleteOutlined, EditOutlined } from '@mui/icons-material';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
@@ -17,54 +16,53 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Autocomplete from '@mui/material/Autocomplete';
 import { generate } from '@wcj/generate-password';
-import { newCustomerMail } from './Newsletters';
+import { useSelector } from 'react-redux';
+import store from '../store/_storeConfig';
+import { addUser, clearData, updateUser, getUser, removeUser, setUserData, userTypes } from '../store/userHandle';
 
 export default function Users() {
     const { classes } = useStyles();
 
-    const userTypes = ['Admin', 'Tech Lead'];
-    const [type, setType] = useState(userTypes[1]);
+    const {
+        type,
+        firstName,
+        lastName,
+        contactNo,
+        email,
+        username,
+        password,
+        category,
+        sortField,
+        open,
+    } = useSelector((state) => state.entities.users.variables);
+
+    const users = useSelector((state) => state.entities.users.list);
+    const isUsersLoading = useSelector((state) => state.entities.users.loading);
+
     const [userTypeError, setUserTypeError] = useState(false);
     var utError = false;
 
-    const [firstName, setFirstName] = useState('');
     const [firstNameError, setFirstNameError] = useState(false);
     var fError = false;
 
-    const [lastName, setLastName] = useState('');
     const [lastNameError, setLastNameError] = useState(false);
     var lError = false;
 
-    const [contactNo, setContact] = useState('');
     const [contactError, setContactError] = useState(false);
     var cNoError = false;
 
-    const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState(false);
     var eError = false;
 
-    const [username, setUsername] = useState('');
     const [usernameError, setusernameError] = useState(false);
     var uError = false;
 
-    const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState(false);
     var pError = false;
 
-    const [fetchError, setFetchError] = useState(false);
-    const [users, setUsers] = useState([]);
-
     const [search, setSearch] = useState('');
-    const [category, setCategory] = useState('name');
-
-    const [sortField, setSortField] = useState('all');
-    const [descending, setDescending] = useState(1);
-
-    const [open, setOpen] = useState(false);
-
     const [isUpdate, setIsUpdate] = useState(false);
     const [updateId, setUpdateId] = useState(null);
-
     const [emailErrorMsg, setEmailErrorMsg] = useState('');
 
     const fullWidth = true;
@@ -76,21 +74,14 @@ export default function Users() {
     }
 
     const handleClear = () => {
-        setType(userTypes[1]);
-        setFirstName('');
-        setLastName('');
-        setContact('');
-        setEmail('');
+        store.dispatch(clearData());
+
         setSearch('');
         setUpdateId('');
-        setCategory('name');
         clearErrors();
 
         if (!isUpdate)
             setIsUpdate(false);
-
-        setUsername('');
-        setPassword('');
     };
 
     const clearErrors = () => {
@@ -168,7 +159,7 @@ export default function Users() {
             return false;
     }
 
-    const saveUser = (e) => {
+    const handleSave = (e) => {
         e.preventDefault();
 
         if (validateForm()) {
@@ -178,58 +169,33 @@ export default function Users() {
                 profilePic: '-'
             };
 
-            createAPIEndpoint(ENDPOINTS.user)
-                .post(data)
-                .then((res) => {
-                    if (res.status === 200) {
-                        handleClear();
-                        setOpen(!open);
-                        newCustomerMail(firstName + ' ' + lastName, email, username, password);
-                        loadData();
-                        console.log('User saved...!');
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                    alert('Insert Failed..!');
-                });
+            store.dispatch(addUser(data));
+            handleClear();
+            store.dispatch(setUserData('open', !open));
         }
     };
 
-    const deleteUser = async (id) => {
-        await createAPIEndpoint(ENDPOINTS.user)
-            .delete(id)
-            .then(res => {
-                if (res.status === 200) {
-                    const newUsers = users.filter(user => user.userId !== id);
-                    setUsers(newUsers);
-                    loadData();
-                    return;
-                }
-                throw new Error("User can not be deleted..!");
-            })
-            .catch(err => {
-                alert("Deletion Error..!");
-                console.log(err);
-            });
+    const handleDelete = (userId) => {
+        store.dispatch(removeUser(userId));
     };
 
     const setToUpdate = (id) => {
-        const user = users.find(u => u.userId === id);
+        const user = getUser(id)(store.getState());
+        
+        store.dispatch(setUserData('type', user.type));
+        store.dispatch(setUserData('firstName', user.firstName));
+        store.dispatch(setUserData('lastName', user.lastName));
+        store.dispatch(setUserData('contactNo', user.contactNo));
+        store.dispatch(setUserData('email', user.email));
+        store.dispatch(setUserData('open', true));
 
-        setType(user.type);
-        setFirstName(user.firstName);
-        setLastName(user.firstName);
-        setContact(user.contactNo);
-        setEmail(user.email);
-        setOpen(true);
         setIsUpdate(true);
         setUpdateId(id);
     };
 
-    const updateUser = () => {
+    const handleUpdate = () => {
         if (validateForm()) {
-            var u = users.find(user => user.userId === updateId);
+            var u = getUser(updateId)(store.getState());
 
             if (
                 u.type === type &&
@@ -245,40 +211,12 @@ export default function Users() {
                     type, firstName, lastName, contactNo, email
                 };
 
-                createAPIEndpoint(ENDPOINTS.user)
-                    .put(updateId, data)
-                    .then(() => {
-                        handleClear();
-                        loadData();
-                    })
-                    .catch(err => {
-                        console.log(err);
-                        alert('Update Failed..!');
-                    });
+                store.dispatch(updateUser(updateId, data));
             }
 
-            setOpen(!open);
+            store.dispatch(setUserData('open', !open));
             setIsUpdate(!isUpdate);
         }
-    }
-
-    const loadData = () => {
-        createAPIEndpoint(ENDPOINTS.user)
-            .fetch()
-            .then(res => {
-                if (res.status === 200) {
-                    setFetchError(false);
-                    return res.data;
-                }
-                throw new Error("Can not fetch Users...!")
-            })
-            .then(data => {
-                setUsers(data);
-            })
-            .catch(err => {
-                setFetchError(true);
-                console.log(err);
-            });
     };
 
     const userGrid = () => {
@@ -288,7 +226,7 @@ export default function Users() {
                 className="my-masonry-grid"
                 columnClassName="my-masonry-grid_column"
             >
-                {(!fetchError)
+                {(!isUsersLoading)
                     ? users
                         .filter(user =>
                             (category === 'name')
@@ -300,16 +238,6 @@ export default function Users() {
                                 ? user.type.replace(/\s/g, '').toLowerCase() === sortField.toLowerCase()
                                 : user.type !== 'Customer'
                         )
-                        .sort((u1, u2) => {
-                            var name1 = u1.firstName + " " + u1.lastName;
-                            var name2 = u2.firstName + " " + u2.lastName;
-
-                            return (
-                                (name1 < name2)
-                                    ? -descending
-                                    : (name1 > name2) ? descending : 0
-                            );
-                        })
                         .map(user => (
                             <Card elevation={1} key={user.userId} className={classes.customerCard}>
                                 <CardHeader
@@ -318,7 +246,7 @@ export default function Users() {
                                             <IconButton onClick={() => setToUpdate(user.userId)}>
                                                 <EditOutlined />
                                             </IconButton>
-                                            <IconButton onClick={() => deleteUser(user.userId)}>
+                                            <IconButton onClick={() => handleDelete(user.userId)}>
                                                 <DeleteOutlined />
                                             </IconButton>
                                         </Stack>
@@ -344,52 +272,18 @@ export default function Users() {
     };
 
     const handleDialogClose = () => {
-        setOpen(!open);
-        setIsUpdate(false);
+        store.dispatch(setUserData('open', !open));
         handleClear();
+        setIsUpdate(false);
     };
-
-    const sortFieldList = [
-        {
-            value: 'techLead',
-            text: 'Tech Lead'
-        },
-        {
-            value: 'admin',
-            text: 'Admin'
-        },
-        {
-            value: 'all',
-            text: 'All'
-        },
-    ]
-
-    const searchByList = [
-        {
-            value: 'name',
-            text: 'by Name'
-        },
-        {
-            value: 'contactNo',
-            text: 'by Contact No'
-        },
-        {
-            value: 'email',
-            text: 'by Email'
-        }
-    ]
-
-    useEffect(() => {
-        loadData();
-    }, []);
 
     useEffect(() => {
         if (open && !isUpdate) {
             if (password === '') {
                 var pwd = generate({ length: 10 });
-                setPassword(pwd);
+                store.dispatch(setUserData('password', pwd));
             }
-            setUsername(firstName.replace(/\s/g, '_'));
+            store.dispatch(setUserData('username', firstName.replace(/\s/g, '_')));
         }
     }, [open, isUpdate, firstName, password]);
 
@@ -397,12 +291,7 @@ export default function Users() {
         <div className='users'>
             <div className={classes.searchBarContainer}>
                 <SearchBar
-                    sortFieldList={sortFieldList} searchByList={searchByList}
-                    open={open} setOpen={setOpen}
-                    sortField={sortField} setSortField={setSortField}
-                    descending={descending} setDescending={setDescending}
-                    search={search} setSearch={setSearch}
-                    category={category} setCategory={setCategory}
+                    page='users' search={search} setSearch={setSearch} 
                 />
             </div>
             <Dialog
@@ -419,12 +308,12 @@ export default function Users() {
                     <Autocomplete
                         value={type}
                         onChange={(event, newValue) => {
-                            setType(newValue);
+                            store.dispatch(setUserData('type', newValue));
                         }}
                         disablePortal
                         options={userTypes}
-                        renderInput={({inputProps, ...rest}) => 
-                            <TextField {...rest} 
+                        renderInput={({ inputProps, ...rest }) =>
+                            <TextField {...rest}
                                 autoFocus
                                 required
                                 fullWidth
@@ -436,7 +325,7 @@ export default function Users() {
                             />
                         }
                     />
-                    {userTypeError && <span style={{color: '#d32f2f', fontSize: '12px'}}>Select a user Type</span>}
+                    {userTypeError && <span style={{ color: '#d32f2f', fontSize: '12px' }}>Select a user Type</span>}
 
                     <TextField
                         autoFocus
@@ -451,7 +340,7 @@ export default function Users() {
                         className={classes.field}
                         error={firstNameError}
                         helperText={firstNameError ? 'Can not be Empty' : null}
-                        onChange={(e) => setFirstName(e.target.value)}
+                        onChange={(e) => store.dispatch(setUserData('firstName', e.target.value))}
                     />
 
                     <TextField
@@ -466,7 +355,7 @@ export default function Users() {
                         className={classes.field}
                         error={lastNameError}
                         helperText={lastNameError ? "Can not be Empty" : null}
-                        onChange={(e) => setLastName(e.target.value)}
+                        onChange={(e) => store.dispatch(setUserData('lastName', e.target.value))}
                     />
 
                     <TextField
@@ -481,7 +370,7 @@ export default function Users() {
                         className={classes.field}
                         error={contactError}
                         helperText={contactError ? "Can not be Empty" : null}
-                        onChange={(e) => setContact(e.target.value)}
+                        onChange={(e) => store.dispatch(setUserData('contactNo', e.target.value))}
                     />
 
                     <TextField
@@ -496,7 +385,7 @@ export default function Users() {
                         className={classes.field}
                         error={emailError}
                         helperText={emailError ? emailErrorMsg : null}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => store.dispatch(setUserData('email', e.target.value))}
                     />
 
                     {!isUpdate &&
@@ -513,7 +402,7 @@ export default function Users() {
                                 className={classes.field}
                                 error={usernameError}
                                 helperText={usernameError ? "Can not be Empty" : null}
-                                onChange={(e) => setUsername(e.target.value)}
+                                onChange={(e) => store.dispatch(setUserData('username', e.target.value))}
                             />
 
                             <TextField
@@ -528,7 +417,7 @@ export default function Users() {
                                 className={classes.field}
                                 error={passwordError}
                                 helperText={passwordError ? "Can not be Empty" : null}
-                                onChange={(e) => setPassword(e.target.value)}
+                                onChange={(e) => store.dispatch(setUserData('password', e.target.value))}
                             />
                         </>
                     }
@@ -550,7 +439,7 @@ export default function Users() {
 
                         <Button
                             variant='contained'
-                            onClick={(isUpdate) ? updateUser : saveUser}
+                            onClick={(isUpdate) ? handleUpdate : handleSave}
                         >
                             {(isUpdate) ? 'Update' : 'Save'}
                         </Button>

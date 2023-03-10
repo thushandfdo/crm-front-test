@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useStyles } from '../Styles';
-import { createAPIEndpoint, ENDPOINTS } from '../api';
 import { DeleteOutlined, EditOutlined } from '@mui/icons-material';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
@@ -16,51 +15,53 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { generate } from '@wcj/generate-password';
-import { newCustomerMail } from './Newsletters';
-
-import { loadCustomers } from '../store/customerHandle';
 import store from '../store/_storeConfig';
 import { useSelector } from 'react-redux';
+import { 
+    addCustomer, 
+    removeCustomer, 
+    updateCustomer, 
+    setCustomerData, 
+    clearData, 
+    getCustomer 
+} from '../store/customerHandle';
 
 function Customers() {
     const { classes } = useStyles();
 
-    const [company, setCompany] = useState('');
+    const {
+        company,
+        contactPerson,
+        contactNo,
+        email,
+        username,
+        password,
+        category,
+        open
+    } = useSelector((state) => state.entities.customers.variables);
+
+    const customers = useSelector((state) => state.entities.customers.list);
+    const isCustomersLoading = useSelector((state) => state.entities.customers.loading);
+
     const [companyError, setCompanyError] = useState(false);
     var cError = false;
 
-    const [contactPerson, setContactPerson] = useState('');
     const [contactPersonError, setContactPersonError] = useState(false);
     var cpError = false;
 
-    const [contactNo, setContact] = useState('');
     const [contactError, setContactError] = useState(false);
     var cNoError = false;
 
-    const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState(false);
     var eError = false;
 
-    const [username, setUsername] = useState('');
     const [usernameError, setusernameError] = useState(false);
     var uError = false;
 
-    const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState(false);
     var pError = false;
 
-    const [fetchError, setFetchError] = useState(false);
-    // const [customers, setCustomers] = useState([]);
-    const customers = useSelector((state) => state.entities.customers.list);
-
     const [search, setSearch] = useState('');
-    const [category, setCategory] = useState('company');
-
-    const [sortField, setSortField] = useState('company');
-    const [descending, setDescending] = useState(1);
-
-    const [open, setOpen] = useState(false);
-
     const [isUpdate, setIsUpdate] = useState(false);
     const [updateId, setUpdateId] = useState(null);
 
@@ -76,20 +77,14 @@ function Customers() {
     }
 
     const handleClear = () => {
-        setCompany('');
-        setContactPerson('');
-        setContact('');
-        setEmail('');
+        store.dispatch(clearData());
+
         setSearch('');
         setUpdateId('');
-        setCategory('company');
         clearErrors();
 
         if (!isUpdate)
             setIsUpdate(false);
-
-        setUsername('');
-        setPassword('');
     };
 
     const clearErrors = () => {
@@ -115,16 +110,20 @@ function Customers() {
         var emailDuplicated = false;
 
         if (isUpdate) {
-            companyDuplicated = customers.some(customer => customer.company === company && customer.userId !== updateId);
-            emailDuplicated = customers.some(customer => customer.email === email && customer.userId !== updateId);
+            companyDuplicated = customers.some(customer => 
+                customer.company === company && customer.userId !== updateId);
+            emailDuplicated = customers.some(customer => 
+                customer.email === email && customer.userId !== updateId);
         }
         else {
             companyDuplicated = customers.some(customer => customer.company === company);
             emailDuplicated = customers.some(customer => customer.email === email);
         }
 
-        setCompanyErrorMsg(companyDuplicated ? 'Company name is taken, try another' : 'Invalid email format');
-        setEmailErrorMsg(emailDuplicated ? 'Email is already recorded' : 'Invalid email format');
+        setCompanyErrorMsg(companyDuplicated ? 
+            'Company name is taken, try another' : 'Invalid email format');
+        setEmailErrorMsg(emailDuplicated ? 
+            'Email is already recorded' : 'Invalid email format');
 
         if (company === '' || companyDuplicated) {
             setCompanyError(true);
@@ -164,7 +163,7 @@ function Customers() {
             return false;
     }
 
-    const saveCustomer = (e) => {
+    const handleSave = (e) => {
         e.preventDefault();
 
         if (validateForm()) {
@@ -177,57 +176,32 @@ function Customers() {
                 profilePic: '-', company
             };
 
-            createAPIEndpoint(ENDPOINTS.userCustomer)
-                .post(data)
-                .then((res) => {
-                    if (res.status === 200) {
-                        handleClear();
-                        setOpen(!open);
-                        newCustomerMail(contactPerson, email, username, password);
-                        loadData();
-                        console.log('Customer saved...!');
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                    alert('Insert Failed..!');
-                });
+            store.dispatch(addCustomer(data));
+            handleClear();
+            store.dispatch(setCustomerData('open', !open));
         }
     };
 
-    const deleteCustomer = async (id) => {
-        await createAPIEndpoint(ENDPOINTS.userCustomer)
-            .delete(id)
-            .then(res => {
-                if (res.status === 200) {
-                    const newCustomers = customers.filter(customer => customer.userId !== id);
-                    // setCustomers(newCustomers);
-                    loadData();
-                    return;
-                }
-                throw new Error("Customer can not be deleted..!");
-            })
-            .catch(err => {
-                alert("Deletion Error..!");
-                console.log(err);
-            });
+    const handleDelete = (userId) => {
+        store.dispatch(removeCustomer(userId));
     };
 
     const setToUpdate = (id) => {
-        const customer = customers.find(cus => cus.userId === id);
+        const customer = getCustomer(id)(store.getState());
 
-        setCompany(customer.company);
-        setContactPerson(customer.firstName + ' ' + customer.lastName);
-        setContact(customer.contactNo);
-        setEmail(customer.email);
-        setOpen(true);
+        store.dispatch(setCustomerData('company', customer.company));
+        store.dispatch(setCustomerData('contactPerson', customer.firstName + ' ' + customer.lastName));
+        store.dispatch(setCustomerData('contactNo', customer.contactNo));
+        store.dispatch(setCustomerData('email', customer.email));
+        store.dispatch(setCustomerData('open', true));
+
         setIsUpdate(true);
         setUpdateId(id);
     };
 
-    const updateCustomer = () => {
+    const handleUpdate = () => {
         if (validateForm()) {
-            var cus = customers.find(customer => customer.userId === updateId);
+            var cus = getCustomer(updateId)(store.getState());
 
             if (
                 cus.company === company &&
@@ -245,41 +219,13 @@ function Customers() {
                     firstName, lastName, contactNo, email, company
                 };
 
-                createAPIEndpoint(ENDPOINTS.userCustomer)
-                    .put(updateId, data)
-                    .then(() => {
-                        handleClear();
-                        loadData();
-                    })
-                    .catch(err => {
-                        console.log(err);
-                        alert('Update Failed..!');
-                    });
+                store.dispatch(updateCustomer(updateId, data));
             }
 
-            setOpen(!open);
+            store.dispatch(setCustomerData('open', !open));
             setIsUpdate(!isUpdate);
         }
     }
-
-    const loadData = () => {
-        createAPIEndpoint(ENDPOINTS.userCustomer)
-            .fetch()
-            .then(res => {
-                if (res.status === 200) {
-                    setFetchError(false);
-                    return res.data;
-                }
-                throw new Error("Can not fetch Customers...!")
-            })
-            .then(data => {
-                // setCustomers(data);
-            })
-            .catch(err => {
-                setFetchError(true);
-                console.log(err);
-            });
-    };
 
     const customerGrid = () => {
         return (
@@ -288,27 +234,13 @@ function Customers() {
                 className="my-masonry-grid"
                 columnClassName="my-masonry-grid_column"
             >
-                {(!fetchError)
+                {(!isCustomersLoading)
                     ? customers
                         .filter(customer =>
                             (category === 'contactPerson')
                                 ? (customer.firstName + " " + customer.lastName).toLowerCase().includes(search.toLowerCase())
                                 : customer[category].toLowerCase().includes(search.toLowerCase())
                         )
-                        .sort((c1, c2) => {
-                            var name1 = c1.firstName + " " + c1.lastName;
-                            var name2 = c2.firstName + " " + c2.lastName;
-
-                            return (
-                                (sortField === 'contactPerson')
-                                    ? (name1 < name2)
-                                        ? -descending
-                                        : (name1 > name2) ? descending : 0
-                                    : (c1[sortField] < c2[sortField])
-                                        ? -descending
-                                        : (c1[sortField] > c2[sortField]) ? descending : 0
-                            );
-                        })
                         .map(customer => (
                             <Card elevation={1} key={customer.userId} className={classes.customerCard}>
                                 <CardHeader
@@ -317,7 +249,7 @@ function Customers() {
                                             <IconButton onClick={() => setToUpdate(customer.userId)}>
                                                 <EditOutlined />
                                             </IconButton>
-                                            <IconButton onClick={() => deleteCustomer(customer.userId)}>
+                                            <IconButton onClick={() => handleDelete(customer.userId)}>
                                                 <DeleteOutlined />
                                             </IconButton>
                                         </Stack>
@@ -343,53 +275,18 @@ function Customers() {
     };
 
     const handleDialogClose = () => {
-        setOpen(!open);
-        setIsUpdate(false);
+        store.dispatch(setCustomerData('open', !open));
         handleClear();
+        setIsUpdate(false);
     };
-
-    const sortFieldList = [
-        {
-            value: 'company',
-            text: 'Company'
-        },
-        {
-            value: 'contactPerson',
-            text: 'Contact Person'
-        }
-    ]
-
-    const searchByList = [
-        {
-            value: 'company',
-            text: 'by Company'
-        },
-        {
-            value: 'contactPerson',
-            text: 'by Contact Person'
-        },
-        {
-            value: 'contactNo',
-            text: 'by Contact No'
-        },
-        {
-            value: 'email',
-            text: 'by Email'
-        }
-    ]
-
-    useEffect(() => {
-        // loadData();
-        store.dispatch(loadCustomers());
-    }, []);
 
     useEffect(() => {
         if (open && !isUpdate) {
             if (password === '') {
                 var pwd = generate({ length: 10 });
-                setPassword(pwd);
+                store.dispatch(setCustomerData('password', pwd));
             }
-            setUsername(company.replace(/\s/g, '_'));
+            store.dispatch(setCustomerData('username', company.replace(/\s/g, '_')));
         }
     }, [open, isUpdate, company, password]);
 
@@ -397,12 +294,7 @@ function Customers() {
         <div className='customers'>
             <div className={classes.searchBarContainer}>
                 <SearchBar
-                    sortFieldList={sortFieldList} searchByList={searchByList}
-                    open={open} setOpen={setOpen}
-                    sortField={sortField} setSortField={setSortField}
-                    descending={descending} setDescending={setDescending}
-                    search={search} setSearch={setSearch}
-                    category={category} setCategory={setCategory}
+                    page='customers' search={search} setSearch={setSearch}
                 />
             </div>
             <Dialog
@@ -428,7 +320,7 @@ function Customers() {
                         color='secondary'
                         error={companyError}
                         helperText={companyError ? companyErrorMsg : null}
-                        onChange={(e) => setCompany(e.target.value)}
+                        onChange={(e) => store.dispatch(setCustomerData('company', e.target.value))}
                     />
 
                     <TextField
@@ -443,7 +335,7 @@ function Customers() {
                         className={classes.field}
                         error={contactPersonError}
                         helperText={contactPersonError ? "Can not be Empty" : null}
-                        onChange={(e) => setContactPerson(e.target.value)}
+                        onChange={(e) => store.dispatch(setCustomerData('contactPerson', e.target.value))}
                     />
 
                     <TextField
@@ -458,7 +350,7 @@ function Customers() {
                         className={classes.field}
                         error={contactError}
                         helperText={contactError ? "Can not be Empty" : null}
-                        onChange={(e) => setContact(e.target.value)}
+                        onChange={(e) => store.dispatch(setCustomerData('contactNo', e.target.value))}
                     />
 
                     <TextField
@@ -473,7 +365,7 @@ function Customers() {
                         className={classes.field}
                         error={emailError}
                         helperText={emailError ? emailErrorMsg : null}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => store.dispatch(setCustomerData('email', e.target.value))}
                     />
 
                     {!isUpdate &&
@@ -490,7 +382,7 @@ function Customers() {
                                 className={classes.field}
                                 error={usernameError}
                                 helperText={usernameError ? "Can not be Empty" : null}
-                                onChange={(e) => setUsername(e.target.value)}
+                                onChange={(e) => store.dispatch(setCustomerData('username', e.target.value))}
                             />
 
                             <TextField
@@ -505,7 +397,7 @@ function Customers() {
                                 className={classes.field}
                                 error={passwordError}
                                 helperText={passwordError ? "Can not be Empty" : null}
-                                onChange={(e) => setPassword(e.target.value)}
+                                onChange={(e) => store.dispatch(setCustomerData('password', e.target.value))}
                             />
                         </>
                     }
@@ -527,7 +419,7 @@ function Customers() {
 
                         <Button
                             variant='contained'
-                            onClick={(isUpdate) ? updateCustomer : saveCustomer}
+                            onClick={(isUpdate) ? handleUpdate : handleSave}
                         >
                             {(isUpdate) ? 'Update' : 'Save'}
                         </Button>
@@ -540,4 +432,3 @@ function Customers() {
 }
 
 export default Customers;
-
