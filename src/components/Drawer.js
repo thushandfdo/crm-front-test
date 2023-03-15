@@ -12,6 +12,7 @@ import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlin
 import UnsubscribeOutlinedIcon from '@mui/icons-material/UnsubscribeOutlined';
 import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
 import PermContactCalendarOutlinedIcon from '@mui/icons-material/PermContactCalendarOutlined';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useStyles } from '../Styles';
 
@@ -21,6 +22,11 @@ export function DrawerBody({ open }) {
     const { classes } = useStyles();
 
     const menuItems = [
+        {
+            text: "Dashboard",
+            icon: <DashboardIcon className={classes.drawerIcon} />,
+            path: '/dashboard'
+        },
         {
             text: "Project Details",
             icon: <AccountTreeOutlinedIcon className={classes.drawerIcon} />,

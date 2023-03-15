@@ -1,10 +1,12 @@
 import { createAction } from "@reduxjs/toolkit";
 import axios from 'axios';
+import store from "../_storeConfig";
 
 export const ENDPOINTS = {
     customer : '/DTOUserCustomer',
     user : '/User',
-    project : '/Project'
+    project : '/Project',
+    login : '/LoginUser',
 };
 
 export const apiCallBegan = createAction('api/callBegan');
@@ -24,6 +26,7 @@ const api = ({ dispatch }) => next => async action => {
         const response = await axios.request({
             baseURL: 'https://localhost:7143/api',
             url,
+            headers: {"Authorization" : `Bearer ${store.getState().login.token}`},
             method,
             data
         });

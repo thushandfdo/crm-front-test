@@ -12,6 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 export function AppBarBody() {
     const [anchorElUser, setAnchorElUser] = useState(null);
@@ -21,9 +22,15 @@ export function AppBarBody() {
     const usernameRef = useRef(null);
     const navigate = useNavigate();
 
+    const name = useSelector(state => state.login.currentUser.name);
+    const role = useSelector(state => state.login.currentUser.role);
+    const profilePic = useSelector(state => state.login.currentUser.pic);
+
     useEffect(() => {
+        // let width = usernameRef.current.clientWidth;
+        // setUserWidth(width > 150 ? width : 150);
         setUserWidth(usernameRef.current.clientWidth);
-    }, [userWidth]);
+    }, [name]);
 
     const handleOpenUserMenu = () => {
         setAnchorElUser(usernameRef.current);
@@ -56,8 +63,9 @@ export function AppBarBody() {
                     onClick={handleOpenUserMenu}
                     className={classes.avatarUsername}
                     ref={usernameRef}
+                    align='center'
                 >
-                    Thushan D. Fernando
+                    {name}
                 </Typography>
                 <IconButton
                     onClick={handleOpenUserMenu}
@@ -67,7 +75,8 @@ export function AppBarBody() {
                 <Menu
                     sx={{
                         '& .MuiMenu-paper': {
-                            width: `${userWidth}px`
+                            width: `${userWidth}px`,
+                            marginTop: '10px'
                         }
                     }}
                     anchorEl={anchorElUser}
@@ -80,21 +89,30 @@ export function AppBarBody() {
                     onClose={handleCloseUserMenu}
                     className={classes.hiddenMenu}
                 >
-                    <MenuItem sx={{ bottom: '-5px' }}>
-                        <Typography className={classes.userType}>Administrator</Typography>
+                    <MenuItem sx={{ bottom: '-5px' }} disabled={true}>
+                        <Typography className={classes.userType}>{role}</Typography>
                     </MenuItem>
                     <Divider />
-                        {userMenuItems.map(item => (
-                            <MenuItem key={item.text} onClick={() => navigate(item.path)}>
-                                <ListItemIcon>
-                                    {item.icon}
-                                </ListItemIcon>
-                                <ListItemText>{item.text}</ListItemText>
-                            </MenuItem>
-                        ))}
+                    {userMenuItems.map(item => (
+                        <MenuItem key={item.text} onClick={() => {setDrop(!drop); navigate(item.path);}}>
+                            <ListItemIcon>
+                                {item.icon}
+                            </ListItemIcon>
+                            <ListItemText>{item.text}</ListItemText>
+                        </MenuItem>
+                    ))}
                 </Menu>
             </div>
-            <Avatar className={classes.avatar} src={require('../images/profile_01.jpg')} />
+            {profilePic === '-'
+                ?
+                <Avatar className={classes.avatar}>
+                    {name[0].toUpperCase()}
+                </Avatar>
+                : 
+                <Avatar className={classes.avatar}
+                    src={require(`../images/profilePics/${profilePic}`)}
+                />
+            }
         </Toolbar>
     )
 }

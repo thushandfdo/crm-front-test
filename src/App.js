@@ -1,20 +1,23 @@
-import Layout from './components/Layout';
+import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route } 
+    from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Layout from './components/Layout';
 import Projects from './pages/Projects';
 import Customers from './pages/Customers';
 import Test from './test/Test';
 import Feedback from './pages/Feedback';
 import Newsletters from './pages/Newsletters';
 import Users from './pages/Users';
-import Home from './pages/Home';
+import Dashboard from './pages/Dashboard';
 import EndUsers from './pages/EndUsers';
+
+import Login from './pages/Login';
+import { useEffect } from 'react';
 
 import store from './store/_storeConfig';
 import { loadProjects } from './store/projectHandle';
 import { loadUsers } from './store/userHandle';
 import { loadCustomers } from './store/customerHandle';
-import { useEffect } from 'react';
 
 const theme = createTheme({
     palette: {
@@ -31,25 +34,28 @@ function App() {
         store.dispatch(loadProjects());
     }, []);
 
+    const router = createBrowserRouter(
+        createRoutesFromElements( 
+            <>
+                <Route path='/' element={<Login />} />
+                <Route element={<Layout />}>
+                    <Route path='/dashboard' element={<Dashboard />} />
+                    <Route path='/projects' element={<Projects />} />
+                    <Route path='/customers' element={<Customers />} />
+                    <Route path='/users' element={<Users />} />
+                    <Route path='/end-users' element={<EndUsers />} />
+                    <Route path='/feedbacks' element={<Feedback />} />
+                    <Route path='/newsletters' element={<Newsletters />} />
+                    <Route path='/*' element={<Test />} />
+                </Route>
+            </>
+        )
+    );
+
     return (
         <div className="App">
             <ThemeProvider theme={theme}>
-                <Router>
-                    <Layout>
-                        <Routes>
-                            {/* <Route element={ <Layout /> }> */}
-                                <Route path='/' element={<Home />} />
-                                <Route path='/projects' element={<Projects />} />
-                                <Route path='/customers' element={<Customers />} />
-                                <Route path='/users' element={<Users />} />
-                                <Route path='/end-users' element={<EndUsers />} />
-                                <Route path='/feedbacks' element={<Feedback />} />
-                                <Route path='/newsletters' element={<Newsletters />} />
-                            {/* </Route> */}
-                            <Route path='/test' element={<Test />} />
-                        </Routes>
-                    </Layout>
-                </Router>
+                <RouterProvider router={router}/>
             </ThemeProvider>
         </div>
     );

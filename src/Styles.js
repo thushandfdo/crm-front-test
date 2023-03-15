@@ -42,7 +42,9 @@ export const useStyles = makeStyles()((theme) => {
             alignItems: 'center',
         },
         avatarUsername: {
-            cursor: 'pointer'
+            cursor: 'pointer',
+            marginRight: '10px',
+            minWidth: '150px',
         },
         hiddenMenu: {
             '& .MuiMenu-list': {

@@ -11,6 +11,7 @@ import { AppBarBody } from './AppBar';
 import { DrawerBody } from './Drawer';
 import { Divider } from '@mui/material';
 import { useStyles } from '../Styles';
+import { Outlet } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -83,7 +84,7 @@ const Drawer = styled(MuiDrawer, {
     }),
 );
 
-export default function Layout({ children }) {
+export default function Layout() {
     const [open, setOpen] = React.useState(false);
     const { classes } = useStyles();
 
@@ -120,7 +121,7 @@ export default function Layout({ children }) {
 
             <Box component="main" className={classes.layoutContent}>
                 <DrawerHeader />
-                {children}
+                <Outlet />
             </Box>
         </Box>
     );
