@@ -8,7 +8,7 @@ export const useStyles = makeStyles()((theme) => {
     return {
         layoutContent: {
             flexGrow: 1,
-            padding: theme.spacing(3),
+            padding: '24px 24px 0 24px',
             minHeight: '100vh',
             backgroundImage: `url(${backimage})`,
             backgroundRepeat: 'no-repeat',
@@ -159,28 +159,27 @@ export const useStyles = makeStyles()((theme) => {
         },
         endUserContainer: {
             display: 'grid',
-            gridTemplateColumns: '1fr 400px',
-            columnGap: '20px',
+            gridTemplateColumns: '1fr 300px',
+            columnGap: '5px',
+            // position: 'sticky',
+            // top: '120px',
+            // zIndex: 4,
+            maxHeight: '75vh',
         },
-        endUserFormContainer: {
-            
+        enduserGrid: {
+            overflowY: 'scroll',
+            margin: '5px 5px 0 5px',
         },
-        endUserSearchDiv: {
-            minHeight: '82vh',
+        newEndUser: {
+            padding: '15px 20px',
+            margin: '5px 15px 0 5px',
+            borderRadius: '8px',
             backgroundColor: 'lightgray',
-            borderRadius: theme.spacing(2),
-            padding: theme.spacing(2),
         },
-        euSearch: {
-            width: '100%',
-            '& .MuiToggleButtonGroup-root': {
-                padding: theme.spacing(1)
-            },
-            '& .MuiToggleButtonGroup-root .MuiToggleButton-root': {
-                border: '1px solid gray',
-                padding: '2px 5px',
-                width: '100%',
-            }
+        newEUContainer: {
+            overflowY: 'scroll',
+            height: '75vh',
+            margin: '5px 5px 0 5px',
         }
     }
 });

@@ -7,6 +7,7 @@ export const ENDPOINTS = {
     user : '/User',
     project : '/Project',
     login : '/LoginUser',
+    endUser : '/Enduser',
 };
 
 export const apiCallBegan = createAction('api/callBegan');

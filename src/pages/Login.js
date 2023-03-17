@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Card, CardContent, Grid, TextField, Typography } from '@mui/material';
 import backimage from '../images/login-back.svg';
 import store from '../store/_storeConfig';
-import { getLoggedStatus, logIn } from '../store/loginHandle';
+import { useSelector } from 'react-redux';
+import { logIn } from '../store/loginHandle';
 
 const useStyles = makeStyles()((theme) => {
     return {
@@ -30,6 +31,8 @@ const useStyles = makeStyles()((theme) => {
 function Login() {
     const { classes } = useStyles();
     const navigate = useNavigate();
+
+    const logged = useSelector(state => state.login.logged);
 
     const [username, setUsername] = useState('');
     const [usernameError, setUsernameError] = useState(false);
@@ -81,14 +84,13 @@ function Login() {
             var data = { username, password };
             store.dispatch(logIn(data));
 
-            const logged = getLoggedStatus();
-
             if (logged) {
-                handleClear();
                 navigate('/dashboard');
             }
-            else 
+            else
                 alert('Login Failed');
+
+            handleClear();
         }
     }
 
@@ -121,7 +123,7 @@ function Login() {
                                 className={classes.field}
                                 helperText={usernameError ? "Can not be Empty" : null}
                                 onChange={(e) => setUsername(e.target.value)}
-                                sx={{ mt: 3}}
+                                sx={{ mt: 3 }}
                             />
 
                             <TextField

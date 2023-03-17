@@ -82,8 +82,8 @@ function Projects() {
     const [descriptionError, setDescriptionError] = useState(false);
     var dError = false;
 
-    var tlError = false;
     const [techLeadError, setTechLeadError] = useState(false);
+    var tlError = false;
 
     const [customerError, setCustomerError] = useState(false);
     var cError = false;

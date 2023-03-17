@@ -22,12 +22,16 @@ export const loginSlice = createSlice({
             state.logged = true;
         },
         gotTokenData: (state, action) => {
-            // console.log(action.payload);
             state.currentUser.userId = action.payload.userId;
             state.currentUser.name = action.payload.firstName + ' ' + action.payload.lastName;
             state.currentUser.username = action.payload.username;
             state.currentUser.role = action.payload.type;
-            state.currentUser.pic = action.payload.profilePic;
+
+            const content = action.payload.profilePic;
+
+            if (content !== null) {
+                state.currentUser.pic = `data:image/png;base64,${content.fileContents}`;
+            }
         }
     }
 })
@@ -53,8 +57,7 @@ export const logIn = (data) => (dispatch, getState) => {
             data: data,
             onSuccess: loggedIn.type,
         })
-    )
-    .then(() => dispatch(
+    ).then(() => dispatch(
         apiCallBegan({
             url,
             onSuccess: gotTokenData.type,
@@ -73,6 +76,8 @@ export const getTokenData = () => (dispatch, getState) => {
 
 // Selectors
 
+// export const getLoggedStatus = state => state.login.logged;
+
 export const getLoggedStatus = () => createSelector(
-    state => state.login.logged
+    state => state.login.logged === true
 );

@@ -18,6 +18,8 @@ import store from './store/_storeConfig';
 import { loadProjects } from './store/projectHandle';
 import { loadUsers } from './store/userHandle';
 import { loadCustomers } from './store/customerHandle';
+import { loadEndusers, loadSales } from './store/saleHandle';
+import Payments from './pages/Payments';
 
 const theme = createTheme({
     palette: {
@@ -32,6 +34,8 @@ function App() {
         store.dispatch(loadCustomers());
         store.dispatch(loadUsers());
         store.dispatch(loadProjects());
+        store.dispatch(loadSales());
+        store.dispatch(loadEndusers());
     }, []);
 
     const router = createBrowserRouter(
@@ -46,6 +50,7 @@ function App() {
                     <Route path='/end-users' element={<EndUsers />} />
                     <Route path='/feedbacks' element={<Feedback />} />
                     <Route path='/newsletters' element={<Newsletters />} />
+                    <Route path='/payments' element={<Payments />} />
                     <Route path='/*' element={<Test />} />
                 </Route>
             </>

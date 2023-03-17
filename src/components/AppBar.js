@@ -110,7 +110,7 @@ export function AppBarBody() {
                 </Avatar>
                 : 
                 <Avatar className={classes.avatar}
-                    src={require(`../images/profilePics/${profilePic}`)}
+                    src={profilePic}
                 />
             }
         </Toolbar>

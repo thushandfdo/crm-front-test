@@ -20,6 +20,7 @@ import { useSelector } from 'react-redux';
 import { setCustomerData, sortCustomers } from '../store/customerHandle';
 import { setUserData, sortUsers } from '../store/userHandle';
 import { setProjectData, sortProjects } from '../store/projectHandle';
+import { setSalesData, sortSales } from '../store/saleHandle';
 
 export default function SearchBar({ page, search, setSearch }) {
     var setData = null;
@@ -37,6 +38,10 @@ export default function SearchBar({ page, search, setSearch }) {
         case 'projects':
             setData = setProjectData;
             sort = sortProjects;
+            break;
+        case 'sales':
+            setData = setSalesData;
+            sort = sortSales;
             break;
         default:
             alert('Invalid page type...!');

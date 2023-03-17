@@ -5,7 +5,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-.customers, .projects, .users {
+.customers, .projects, .users, .endusers {
     position: relative;
     top: -15px;
 }
