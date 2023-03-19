@@ -157,13 +157,13 @@ export const useStyles = makeStyles()((theme) => {
             columnGap: '50px',
             width: '100%'
         },
+
+// End user
+
         endUserContainer: {
             display: 'grid',
             gridTemplateColumns: '1fr 300px',
             columnGap: '5px',
-            // position: 'sticky',
-            // top: '120px',
-            // zIndex: 4,
             maxHeight: '75vh',
         },
         enduserGrid: {
@@ -180,6 +180,54 @@ export const useStyles = makeStyles()((theme) => {
             overflowY: 'scroll',
             height: '75vh',
             margin: '5px 5px 0 5px',
+        },
+
+// Payments
+
+        paymentTable: {
+            overflowY: 'scroll',
+            maxheight: '75vh'
+        },
+        paymentsContainer: {
+            display: 'grid',
+            gridTemplateColumns: '1fr 300px',
+            columnGap: '20px',
+        },
+        payments: {
+            border: '1px solid black',
+            height: '82vh',
+        },
+        paymentDetailField: {
+            marginBottom: '12px'
+        },
+        paymentDetailsArea: {
+            borderRadius: theme.spacing(1),
+            border: '1px solid black',
+            marginBottom: '10px',
+            backgroundColor: '#fff',
+        },
+        paymentHeader: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'lightgray',
+            minHeight: '48px',
+            borderBottom: '1px solid black',
+            borderTopLeftRadius: theme.spacing(1),
+            borderTopRightRadius: theme.spacing(1),
+            // fontSize: '2erm'
+        },
+        projectDetailsContainer: {
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            columnGap: '20px',
+            borderBottomLeftRadius: theme.spacing(1),
+            borderBottomRightRadius: theme.spacing(1),
+            padding: '20px',
+        },
+        payNext: {
+            marginTop: '10px',
+            backgroundColor: '#6c85bb'
         }
     }
 });

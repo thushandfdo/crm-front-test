@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Card, CardContent, Grid, TextField, Typography } from '@mui/material';
 import backimage from '../images/login-back.svg';
 import store from '../store/_storeConfig';
-import { useSelector } from 'react-redux';
-import { logIn } from '../store/loginHandle';
+import { logIn, setLog } from '../store/loginHandle';
 
 const useStyles = makeStyles()((theme) => {
     return {
@@ -32,12 +31,10 @@ function Login() {
     const { classes } = useStyles();
     const navigate = useNavigate();
 
-    const logged = useSelector(state => state.login.logged);
-
     const [username, setUsername] = useState('');
     const [usernameError, setUsernameError] = useState(false);
     var uError = false;
-
+    
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState(false);
     var pError = false;
@@ -82,15 +79,16 @@ function Login() {
 
         if (validate()) {
             var data = { username, password };
-            store.dispatch(logIn(data));
 
-            if (logged) {
-                navigate('/dashboard');
-            }
-            else
-                alert('Login Failed');
+            store.dispatch(logIn(data));
+            store.dispatch(setLog());
 
             handleClear();
+            
+            if (store.getState().token !== null) {
+                navigate('/dashboard');
+            }
+            else alert('Login Failed');
         }
     }
 

@@ -6,7 +6,7 @@ import { ENDPOINTS } from "./middleware/api";
 export const loginSlice = createSlice({
     name: 'login',
     initialState: {
-        logged: false,
+        log: 0,
         token: null,
         currentUser: {
             userId: null,
@@ -19,7 +19,6 @@ export const loginSlice = createSlice({
     reducers: {
         loggedIn: (state, action) => {
             state.token = action.payload;
-            state.logged = true;
         },
         gotTokenData: (state, action) => {
             state.currentUser.userId = action.payload.userId;
@@ -29,16 +28,24 @@ export const loginSlice = createSlice({
 
             const content = action.payload.profilePic;
 
-            if (content !== null) {
+            if (content !== null && content !== undefined) {
                 state.currentUser.pic = `data:image/png;base64,${content.fileContents}`;
             }
+        },
+        loggedSet: (state, action) => {
+            state.log++;
+        },
+        loggedOut: (state, action) => {
+            state.log = 0;
+            state.token = null;
         }
     }
 })
 
 const {
     loggedIn,
-    gotTokenData
+    gotTokenData,
+    loggedOut
 } = loginSlice.actions;
 
 export default loginSlice.reducer;
@@ -72,6 +79,14 @@ export const getTokenData = () => (dispatch, getState) => {
             onSuccess: gotTokenData.type,
         })
     );
+}
+
+export const logOut = () => (dispatch, getState) => {
+    dispatch({type: 'login/loggedOut'});
+}
+
+export const setLog = () => (dispatch, getState) => {
+    dispatch({type: 'login/setLog'});
 }
 
 // Selectors

@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react";
 import {
     PaymentElement,
-    LinkAuthenticationElement,
     useStripe,
     useElements
 } from "@stripe/react-stripe-js";
+import store from "../../store/_storeConfig";
+import { addPayment, setPaymentData } from "../../store/paymentHandle";
 
 export default function Checkout() {
     const stripe = useStripe();
     const elements = useElements();
 
-    const [email, setEmail] = useState('');
-    const [message, setMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
@@ -28,19 +27,22 @@ export default function Checkout() {
         }
 
         stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-            switch (paymentIntent.status) {
-                case "succeeded":
-                    setMessage("Payment succeeded!");
-                    break;
-                case "processing":
-                    setMessage("Your payment is processing.");
-                    break;
-                case "requires_payment_method":
-                    setMessage("Your payment was not successful, please try again.");
-                    break;
-                default:
-                    setMessage("Something went wrong.");
-                    break;
+            if (paymentIntent.status === 'succeeded') {
+                store.dispatch(setPaymentData('message', "Payment succeeded!"));
+                store.dispatch(addPayment(1, clientSecret));
+            }
+            else {
+                switch (paymentIntent.status) {
+                    case "processing":
+                        store.dispatch(setPaymentData('message', "Your payment is processing."));
+                        break;
+                    case "requires_payment_method":
+                        store.dispatch(setPaymentData('message', "Your payment was not successful, please try again."));
+                        break;
+                    default:
+                        store.dispatch(setPaymentData('message', "Something went wrong."));
+                        break;
+                }
             }
         });
     }, [stripe]);
@@ -62,9 +64,9 @@ export default function Checkout() {
         });
 
         if (error.type === "card_error" || error.type === "validation_error") {
-            setMessage(error.message);
+            store.dispatch(setPaymentData('message', error.message));
         } else {
-            setMessage("An unexpected error occurred.");
+            store.dispatch(setPaymentData('message', "An unexpected error occurred."));
         }
 
         setIsLoading(false);
@@ -77,17 +79,12 @@ export default function Checkout() {
     return (
         <div className='checkout'>
             <form id="payment-form" onSubmit={handleSubmit} className="frmPayment">
-                <LinkAuthenticationElement
-                    id="link-authentication-element"
-                    onChange={(e) => setEmail(e.target.value)}
-                />
                 <PaymentElement id="payment-element" options={paymentElementOptions} />
                 <button disabled={isLoading || !stripe || !elements} id="submit" className="payNow">
                     <span id="button-text">
                         {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
                     </span>
                 </button>
-                {message && <div id="payment-message">{message}</div>}
             </form>
         </div>
     )

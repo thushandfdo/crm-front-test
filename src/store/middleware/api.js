@@ -3,11 +3,12 @@ import axios from 'axios';
 import store from "../_storeConfig";
 
 export const ENDPOINTS = {
-    customer : '/DTOUserCustomer',
-    user : '/User',
-    project : '/Project',
-    login : '/LoginUser',
-    endUser : '/Enduser',
+    customer: '/DTOUserCustomer',
+    user: '/User',
+    project: '/Project',
+    login: '/LoginUser',
+    endUser: '/Enduser',
+    payment: '/Payment'
 };
 
 export const apiCallBegan = createAction('api/callBegan');

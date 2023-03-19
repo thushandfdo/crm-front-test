@@ -260,8 +260,8 @@ function EndUsers() {
                                         </IconButton>
                                     </Stack>
                                 }
-                                title={(sale.enduser !== null) ? sale.enduser.company : '-'}
-                                subheader={(sale.project !== null) ? sale.project.name : '-'}
+                                title={(sale.enduser !== undefined && sale.enduser !== null) ? sale.enduser.company : '-'}
+                                subheader={(sale.enduser !== undefined && sale.project !== null) ? sale.project.name : '-'}
                                 className={classes.customerCardHeader}
                             />
                             <Divider />
@@ -291,7 +291,7 @@ function EndUsers() {
         if (category === 'enduser') {
             return (
                 endusers.filter(enduser =>
-                    enduser.company.toLowerCase().includes(search.toLowerCase())
+                    (enduser.company !== null && enduser.company !== undefined) ? enduser.company.toLowerCase().includes(search.toLowerCase()) : false
                 ).map(enduser =>
                     <div key={enduser.enduserId} className={classes.newEndUser}>
                         <Stack direction='row' spacing={1} alignItems='center'>

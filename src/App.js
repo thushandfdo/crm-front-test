@@ -19,6 +19,7 @@ import { loadProjects } from './store/projectHandle';
 import { loadUsers } from './store/userHandle';
 import { loadCustomers } from './store/customerHandle';
 import { loadEndusers, loadSales } from './store/saleHandle';
+import { loadPayments } from './store/paymentHandle';
 import Payments from './pages/Payments';
 
 const theme = createTheme({
@@ -36,6 +37,7 @@ function App() {
         store.dispatch(loadProjects());
         store.dispatch(loadSales());
         store.dispatch(loadEndusers());
+        store.dispatch(loadPayments());
     }, []);
 
     const router = createBrowserRouter(

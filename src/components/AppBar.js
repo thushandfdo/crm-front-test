@@ -13,6 +13,8 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import store from '../store/_storeConfig';
+import { logOut } from '../store/loginHandle';
 
 export function AppBarBody() {
     const [anchorElUser, setAnchorElUser] = useState(null);
@@ -94,7 +96,11 @@ export function AppBarBody() {
                     </MenuItem>
                     <Divider />
                     {userMenuItems.map(item => (
-                        <MenuItem key={item.text} onClick={() => {setDrop(!drop); navigate(item.path);}}>
+                        <MenuItem key={item.text} onClick={() => {
+                            setDrop(!drop);
+                            if (item.text === 'Log out') store.dispatch(logOut());
+                            navigate(item.path);
+                        }}>
                             <ListItemIcon>
                                 {item.icon}
                             </ListItemIcon>
